@@ -7,19 +7,27 @@ import com.example.qaapp.database.Cars
 
 class OverviewModel : ViewModel() {
 
-//    enum class Numbers { ONE, TWO, THREE }
-//
-//    val myArray = arrayOf<String>("Abu","Praveen","Sathya","Yogesh","Ram")
-
-
     private val _mCarCompany = MutableLiveData<List<Cars>>();
-
     val mCarCompany: LiveData<List<Cars>>
     get() = _mCarCompany
+
+    private val _navigateToSelectedProperty = MutableLiveData<Cars>()
+    val navigateToSelectedProperty : LiveData<Cars>
+    get() = _navigateToSelectedProperty
 
     fun setCarCompany(list: List<Cars>) {
         _mCarCompany.value = list
     }
+
+    fun displayDetails(cars: Cars) {
+        _navigateToSelectedProperty.value = cars
+    }
+
+    fun displayDetailsComplete() {
+        _navigateToSelectedProperty.value = null
+    }
+
+
 
 
 }

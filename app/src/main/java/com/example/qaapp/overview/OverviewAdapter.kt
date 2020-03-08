@@ -1,6 +1,7 @@
 package com.example.qaapp.overview
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.qaapp.database.Cars
 import com.example.qaapp.databinding.ListItemCarBinding
 
-class OverviewAdapter() : ListAdapter<Cars, OverviewAdapter.ViewHolder>(OverviewDiffCallback()) {
+class OverviewAdapter(val onClickListener: OnClickListener) :
+    ListAdapter<Cars, OverviewAdapter.ViewHolder>(OverviewDiffCallback()) {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -16,11 +19,23 @@ class OverviewAdapter() : ListAdapter<Cars, OverviewAdapter.ViewHolder>(Overview
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(item)
+        }
         holder.bind(item)
     }
 
+    /**
+     * Custom listener that handles clicks on [RecyclerView] items.  Passes the [Cars]
+     * associated with the current item to the [onClick] function.
+     * @param clickListener lambda that will be called with the current [Cars]
+     */
+    class OnClickListener(val clickListener: (cars: Cars) -> Unit) {
+        fun onClick(cars: Cars) = clickListener(cars)
+    }
 
-    class ViewHolder private constructor(val binding: ListItemCarBinding) :
+
+    class ViewHolder (val binding: ListItemCarBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cars: Cars) {
