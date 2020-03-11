@@ -15,6 +15,11 @@ class OverviewModel : ViewModel() {
     val navigateToSelectedProperty : LiveData<Cars>
     get() = _navigateToSelectedProperty
 
+    private val _navigateToMars = MutableLiveData<Boolean>()
+    val navigateToMars : LiveData<Boolean>
+    get() = _navigateToMars
+
+
     fun setCarCompany(list: List<Cars>) {
         _mCarCompany.value = list
     }
@@ -26,6 +31,15 @@ class OverviewModel : ViewModel() {
     fun displayDetailsComplete() {
         _navigateToSelectedProperty.value = null
     }
+
+    fun navigateMarsFragment() {
+        _navigateToMars.value = true
+    }
+
+    fun navigateMarsFragmentComplete() {
+        _navigateToMars.value = null
+    }
+
 
 
 

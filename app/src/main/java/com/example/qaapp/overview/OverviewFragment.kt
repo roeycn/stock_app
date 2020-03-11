@@ -82,6 +82,19 @@ class OverviewFragment : Fragment() {
             }
         })
 
+
+        binding.button5.setOnClickListener() {
+            viewModel.navigateMarsFragment()
+        }
+
+        viewModel.navigateToMars.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(OverviewFragmentDirections.actionOverviewFragmentToMarsFragment())
+                viewModel.navigateMarsFragmentComplete()
+            }
+        })
+
+
         // Inflate the layout for this fragment
         return binding.root
     }
