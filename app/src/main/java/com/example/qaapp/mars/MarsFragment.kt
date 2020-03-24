@@ -1,12 +1,12 @@
 package com.example.qaapp.mars
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
+import com.example.qaapp.R
 import com.example.qaapp.databinding.FragmentMarsBinding
+import com.example.qaapp.network.MarsApiFilter
 
 /**
  * A simple [Fragment] subclass.
@@ -22,8 +22,6 @@ class MarsFragment : Fragment() {
         ViewModelProviders.of(this).get(MarsViewModel::class.java)
     }
 
-
-
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
@@ -35,8 +33,28 @@ class MarsFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        setHasOptionsMenu(true)
 
         return binding.root
+    }
+
+    /**
+     * Inflates the overflow menu that contains filtering options.
+     */
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.overflow_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.updateFilter(
+            when (item.itemId) {
+                R.id.show_rent_menu -> MarsApiFilter.SHOW_RENT
+                R.id.show_buy_menu -> MarsApiFilter.SHOW_BUY
+                else -> MarsApiFilter.SHOW_ALL
+            }
+        )
+        return true
     }
 
 }
