@@ -94,6 +94,16 @@ class OverviewFragment : Fragment() {
             }
         })
 
+        binding.button6.setOnClickListener() {
+            viewModel.navigateStockFragment()
+        }
+
+        viewModel.navigateToStock.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(OverviewFragmentDirections.actionOverviewFragmentToStockFragment())
+                viewModel.navigateStockFragmentComplete()
+            }
+        })
 
         // Inflate the layout for this fragment
         return binding.root

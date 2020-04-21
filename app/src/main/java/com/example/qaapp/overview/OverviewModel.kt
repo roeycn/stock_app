@@ -19,6 +19,10 @@ class OverviewModel : ViewModel() {
     val navigateToMars : LiveData<Boolean>
     get() = _navigateToMars
 
+    private val _navigateToStock = MutableLiveData<Boolean>()
+    val navigateToStock : LiveData<Boolean>
+        get() = _navigateToStock
+
 
     fun setCarCompany(list: List<Cars>) {
         _mCarCompany.value = list
@@ -40,6 +44,13 @@ class OverviewModel : ViewModel() {
         _navigateToMars.value = null
     }
 
+    fun navigateStockFragment() {
+        _navigateToStock.value = true
+    }
+
+    fun navigateStockFragmentComplete() {
+        _navigateToStock.value = null
+    }
 
 
 

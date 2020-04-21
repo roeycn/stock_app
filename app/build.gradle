@@ -84,4 +84,7 @@ dependencies {
     // Retrofit Coroutines Support
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
+    // logging
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+
 }

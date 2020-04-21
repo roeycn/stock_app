@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_overviewFragment_to_marsFragment"
             app:destination="@id/marsFragment" />
+        <action
+            android:id="@+id/action_overviewFragment_to_stockFragment"
+            app:destination="@id/stockFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -31,4 +34,8 @@
         android:name="com.example.qaapp.mars.MarsFragment"
         android:label="fragment_mars"
         tools:layout="@layout/fragment_mars" />
+    <fragment
+        android:id="@+id/stockFragment"
+        android:name="com.example.qaapp.stock.StockFragment"
+        android:label="StockFragment" />
 </navigation>
