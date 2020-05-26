@@ -5,16 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.qaapp.R
 import com.example.qaapp.database.Cars
 import com.example.qaapp.databinding.FragmentOverviewBinding
-import kotlinx.android.synthetic.main.list_item_car.*
 
 /**
  * A simple [Fragment] subclass.

@@ -3,7 +3,6 @@ package com.example.qaapp.database
 import android.os.Parcel
 import android.os.Parcelable
 
-
 data class Cars (
 
     var company: String,
