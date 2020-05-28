@@ -8,7 +8,7 @@
 <data>
     <variable
         name="viewModel"
-        type="com.example.qaapp.detail.DetailViewModel" />
+        type="com.example.stockapp.detail.DetailViewModel" />
 </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

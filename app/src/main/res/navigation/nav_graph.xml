@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/overviewFragment"
-        android:name="com.example.qaapp.overview.OverviewFragment"
+        android:name="com.example.stockapp.overview.OverviewFragment"
         android:label="fragment_overview"
         tools:layout="@layout/fragment_overview" >
         <action
@@ -17,25 +17,25 @@
             android:id="@+id/action_overviewFragment_to_marsFragment"
             app:destination="@id/marsFragment" />
         <action
-            android:id="@+id/action_overviewFragment_to_stockFragment"
-            app:destination="@id/stockFragment" />
+            android:id="@+id/action_overviewFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.qaapp.detail.DetailFragment"
+        android:name="com.example.stockapp.detail.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" >
         <argument
             android:name="selectedProperty"
-            app:argType="com.example.qaapp.database.Cars" />
+            app:argType="com.example.stockapp.database.Cars" />
     </fragment>
     <fragment
         android:id="@+id/marsFragment"
-        android:name="com.example.qaapp.mars.MarsFragment"
+        android:name="com.example.stockapp.mars.MarsFragment"
         android:label="fragment_mars"
         tools:layout="@layout/fragment_mars" />
     <fragment
-        android:id="@+id/stockFragment"
-        android:name="com.example.qaapp.stock.StockFragment"
-        android:label="StockFragment" />
+        android:id="@+id/searchFragment"
+        android:name="com.example.stockapp.search.SearchFragment"
+        android:label="fragment_search" />
 </navigation>

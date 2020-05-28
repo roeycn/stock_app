@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.qaapp.mars.MarsViewModel" />
+            type="com.example.stockapp.mars.MarsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

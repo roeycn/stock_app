@@ -5,7 +5,7 @@
     <data>
         <variable
             name="stock"
-            type="com.example.qaapp.domain.StockDataModel" />
+            type="com.example.stockapp.domain.StockDataModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
