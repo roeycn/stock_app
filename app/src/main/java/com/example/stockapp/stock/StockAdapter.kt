@@ -1,4 +1,4 @@
-package com.example.stockapp.search
+package com.example.stockapp.stock
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import com.example.stockapp.domain.StockDataModel
 /**
  * RecyclerView Adapter for setting up data binding on the items in the list.
  */
-class SearchAdapter(val callback: SearchFragment.StockClick) : RecyclerView.Adapter<StockViewHolder>() {
+class StockAdapter(val callback: StockFragment.StockClick) : RecyclerView.Adapter<StockViewHolder>() {
 
     /**
      * The stocks that our Adapter will show
@@ -26,8 +26,6 @@ class SearchAdapter(val callback: SearchFragment.StockClick) : RecyclerView.Adap
             // element in our RecyclerView to be invalidated.
             notifyDataSetChanged()
         }
-
- //   val stocklist = stocksRepository.stocks
 
     /**
      * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent

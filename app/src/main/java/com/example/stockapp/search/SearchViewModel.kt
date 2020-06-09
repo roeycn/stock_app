@@ -6,14 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.stockapp.database.getDatabase
-import com.example.stockapp.network.*
 import com.example.stockapp.repository.StocksRepository
 import kotlinx.coroutines.*
-import java.lang.Exception
+import java.util.ArrayList
 
 enum class StockApiStatus { LOADING, ERROR, DONE }
 
-class StockViewModel(application: Application) : ViewModel() {
+class SearchViewModel(application: Application) : ViewModel() {
 
     // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<StockApiStatus>()
@@ -21,39 +20,6 @@ class StockViewModel(application: Application) : ViewModel() {
     val status: LiveData<StockApiStatus>
         get() = _status
 
-    private val _response = MutableLiveData<StockDailyProperty>()
-    val response: LiveData<StockDailyProperty>
-        get() = _response
-
-    private val _searchResponse = MutableLiveData<StockSearchProperty>()
-    val searchResponse: LiveData<StockSearchProperty>
-        get() = _searchResponse
-
-    private val _searchButtonClicked = MutableLiveData<Boolean>()
-    val searchButtonClicked: LiveData<Boolean>
-        get() = _searchButtonClicked
-
-
-    // via database flow
-    private val _stockLastPriceResponse = MutableLiveData<StockSearchProperty>()
-    val stockLastPriceResponse: LiveData<StockSearchProperty>
-        get() = _stockLastPriceResponse
-
-
-//    private val _editTextData = MutableLiveData<String>()
-//    val editTextData: LiveData<String>
-//        get() = _editTextData
-
-
-    val editTextData = MutableLiveData<String>()
-
-    fun setText(value: String) {
-        editTextData.value = "ABC"
-    }
-
-    fun getText(): MutableLiveData<String> {
-        return editTextData
-    }
 
     /**
      * This is the job for all coroutines started by this ViewModel.
@@ -73,90 +39,225 @@ class StockViewModel(application: Application) : ViewModel() {
 
     init {
         //getStockData()
-        coroutineScope.launch {
-            stocksRepository.refreshStocks()
+     //   coroutineScope.launch {
+       //     stocksRepository.refreshStocks()
         }
-    }
-
-    val stocklist = stocksRepository.stocks
-
-    fun startSearch() {
-        _searchButtonClicked.value = true
-    }
-
-    fun stopSearch() {
-        _searchButtonClicked.value = null
-    }
-
-
-//    fun setEditTextData(data: String) {
-//        _editTextData.value = data
-//    }
-
-//    fun editTextChanged(newText: String) {
-//        if (newText == _editTextData.value) {
-//            return
-//        }
-//    }
-
-//    @InverseMethod("convert")
-//    fun getText() {
-//        _editTextData = newText.toString()
-//    }
-
-    private fun getStockData() {
-        coroutineScope.launch {
-             var responseDataDeferred = StockApi.retrofitService.getStockData()
-            try {
-                _status.value = StockApiStatus.LOADING
-                // this will run on a thread managed by Retrofit
-                val result = responseDataDeferred.await()
-                _status.value = StockApiStatus.DONE
-                _response.value = result
-            } catch (e: Exception) {
-                _status.value = StockApiStatus.ERROR
-                _response.value = null
-            }
-        }
-    }
-
-     fun getSearchResults(keywords: String, apikey: String) {
-        coroutineScope.launch {
-            var searchResponse = StockApi.retrofitService.getSearchResults(keywords, apikey)
-            try {
-                // this will run on a thread managed by Retrofit
-                val result = searchResponse.await()
-                _searchResponse.value = result
-            } catch (e: Exception) {
-                _searchResponse.value = null
-            }
-        }
-    }
-
-//    fun getStockLastPrice() {
-//        coroutineScope.launch {
-//            var stockLastPriceResponse = StockApi.retrofitService.getStockLastPrice()
-//            try {
-//                // this will run on a thread managed by Retrofit
-//                val result = stockLastPriceResponse.await()
-//                _stockLastPriceResponse.value = result.
-//            } catch (e: Exception) {
-//                _stockLastPriceResponse.value = null
-//            }
-//        }
-//    }
-
 
     /**
      * Factory for constructing StockViewModel with parameter
      */
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(StockViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return StockViewModel(app) as T
+                return SearchViewModel(app) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
+    }
+
+
+    var countries:MutableList<String> = ArrayList()
+    var displayList:MutableList<String> = ArrayList()
+
+     fun loadData(){
+        countries.add("Afghanistan")
+        countries.add("Albania")
+        countries.add("Algeria")
+        countries.add("Andorra")
+        countries.add("Angola")
+        countries.add("Antigua and Barbuda")
+        countries.add("Argentina")
+        countries.add("Armenia")
+        countries.add("Australia")
+        countries.add("Austria")
+        countries.add("Azerbaijan")
+        countries.add("Bahamas")
+        countries.add("Bahrain")
+        countries.add("Bangladesh")
+        countries.add("Barbados")
+        countries.add("Belarus")
+        countries.add("Belgium")
+        countries.add("Belize")
+        countries.add("Benin")
+        countries.add("Bhutan")
+        countries.add("Bolivia")
+        countries.add("Bosnia and Herzegovina")
+        countries.add("Botswana")
+        countries.add("Brazil")
+        countries.add("Brunei")
+        countries.add("Bulgaria")
+        countries.add("Burkina Faso")
+        countries.add("Burundi")
+        countries.add("Cabo Verde")
+        countries.add("Cambodia")
+        countries.add("Cameroon")
+        countries.add("Canada")
+        countries.add("Central African Republic (CAR)")
+        countries.add("Chad")
+        countries.add("Chile")
+        countries.add("China")
+        countries.add("Colombia")
+        countries.add("Comoros")
+        countries.add("Democratic Republic of the Congo")
+        countries.add("Republic of the Congo")
+        countries.add("Costa Rica")
+        countries.add("Cote d'Ivoire")
+        countries.add("Croatia")
+        countries.add("Cuba")
+        countries.add("Cyprus")
+        countries.add("Czech Republic")
+        countries.add("Denmark")
+        countries.add("Djibouti")
+        countries.add("Dominica")
+        countries.add("Dominican Republic")
+        countries.add("Ecuador")
+        countries.add("Egypt")
+        countries.add("El Salvador")
+        countries.add("Equatorial Guinea")
+        countries.add("Eritrea")
+        countries.add("Estonia")
+        countries.add("Ethiopia")
+        countries.add("Fiji")
+        countries.add("Finland")
+        countries.add("France")
+        countries.add("Gabon")
+        countries.add("Gambia")
+        countries.add("Georgia")
+        countries.add("Germany")
+        countries.add("Ghana")
+        countries.add("Greece")
+        countries.add("Grenada")
+        countries.add("Guatemala")
+        countries.add("Guinea")
+        countries.add("Guinea-Bissau")
+        countries.add("Guyana")
+        countries.add("Haiti")
+        countries.add("Honduras")
+        countries.add("Hungary")
+        countries.add("Iceland")
+        countries.add("India")
+        countries.add("Indonesia")
+        countries.add("Iran")
+        countries.add("Iraq")
+        countries.add("Ireland")
+        countries.add("Israel")
+        countries.add("Italy")
+        countries.add("Jamaica")
+        countries.add("Japan")
+        countries.add("Jordan")
+        countries.add("Kazakhstan")
+        countries.add("Kenya")
+        countries.add("Kiribati")
+        countries.add("Kosovo")
+        countries.add("Kuwait")
+        countries.add("Kyrgyzstan")
+        countries.add("Laos")
+        countries.add("Latvia")
+        countries.add("Lebanon")
+        countries.add("Lesotho")
+        countries.add("Liberia")
+        countries.add("Libya")
+        countries.add("Liechtenstein")
+        countries.add("Lithuania")
+        countries.add("Luxembourg")
+        countries.add("Macedonia (FYROM)")
+        countries.add("Madagascar")
+        countries.add("Malawi")
+        countries.add("Malaysia")
+        countries.add("Maldives")
+        countries.add("Mali")
+        countries.add("Malta")
+        countries.add("Marshall Islands")
+        countries.add("Mauritania")
+        countries.add("Mauritius")
+        countries.add("Mexico")
+        countries.add("Micronesia")
+        countries.add("Moldova")
+        countries.add("Monaco")
+        countries.add("Mongolia")
+        countries.add("Montenegro")
+        countries.add("Morocco")
+        countries.add("Mozambique")
+        countries.add("Myanmar (Burma)")
+        countries.add("Namibia")
+        countries.add("Nauru")
+        countries.add("Nepal")
+        countries.add("Netherlands")
+        countries.add("New Zealand")
+        countries.add("Nicaragua")
+        countries.add("Niger")
+        countries.add("Nigeria")
+        countries.add("North Korea")
+        countries.add("Norway")
+        countries.add("Oman")
+        countries.add("Pakistan")
+        countries.add("Palau")
+        countries.add("Palestine")
+        countries.add("Panama")
+        countries.add("Papua New Guinea")
+        countries.add("Paraguay")
+        countries.add("Peru")
+        countries.add("Philippines")
+        countries.add("Poland")
+        countries.add("Portugal")
+        countries.add("Qatar")
+        countries.add("Romania")
+        countries.add("Russia")
+        countries.add("Rwanda")
+        countries.add("Saint Kitts and Nevis")
+        countries.add("Saint Lucia")
+        countries.add("Saint Vincent and the Grenadines")
+        countries.add("Samoa")
+        countries.add("San Marino")
+        countries.add("Sao Tome and Principe")
+        countries.add("Saudi Arabia")
+        countries.add("Senegal")
+        countries.add("Serbia")
+        countries.add("Seychelles")
+        countries.add("Sierra Leone")
+        countries.add("Singapore")
+        countries.add("Slovakia")
+        countries.add("Slovenia")
+        countries.add("Solomon Islands")
+        countries.add("Somalia")
+        countries.add("South Africa")
+        countries.add("South Korea")
+        countries.add("South Sudan")
+        countries.add("Spain")
+        countries.add("Sri Lanka")
+        countries.add("Sudan")
+        countries.add("Suriname")
+        countries.add("Swaziland")
+        countries.add("Sweden")
+        countries.add("Switzerland")
+        countries.add("Syria")
+        countries.add("Taiwan")
+        countries.add("Tajikistan")
+        countries.add("Tanzania")
+        countries.add("Thailand")
+        countries.add("Timor-Leste")
+        countries.add("Togo")
+        countries.add("Tonga")
+        countries.add("Trinidad and Tobago")
+        countries.add("Tunisia")
+        countries.add("Turkey")
+        countries.add("Turkmenistan")
+        countries.add("Tuvalu")
+        countries.add("Uganda")
+        countries.add("Ukraine")
+        countries.add("United Arab Emirates (UAE)")
+        countries.add("United Kingdom (UK)")
+        countries.add("United States of America (USA)")
+        countries.add("Uruguay")
+        countries.add("Uzbekistan")
+        countries.add("Vanuatu")
+        countries.add("Vatican City (Holy See)")
+        countries.add("Venezuela")
+        countries.add("Vietnam")
+        countries.add("Yemen")
+        countries.add("Zambia")
+        countries.add("Zimbabwe")
+        displayList.addAll(countries)
     }
 }

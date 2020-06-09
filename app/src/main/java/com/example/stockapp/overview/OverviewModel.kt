@@ -23,6 +23,9 @@ class OverviewModel : ViewModel() {
     val navigateToStock : LiveData<Boolean>
         get() = _navigateToStock
 
+    private val _navigateToSearch = MutableLiveData<Boolean>()
+    val navigateToSearch : LiveData<Boolean>
+        get() = _navigateToSearch
 
     fun setCarCompany(list: List<Cars>) {
         _mCarCompany.value = list
@@ -52,6 +55,13 @@ class OverviewModel : ViewModel() {
         _navigateToStock.value = null
     }
 
+    fun navigateSearchFragment() {
+        _navigateToSearch.value = true
+    }
+
+    fun navigateSearchFragmentComplete() {
+        _navigateToSearch.value = null
+    }
 
 
 

@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_overviewFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_overviewFragment_to_stockFragment"
+            app:destination="@id/stockFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -35,7 +38,12 @@
         android:label="fragment_mars"
         tools:layout="@layout/fragment_mars" />
     <fragment
+        android:id="@+id/stockFragment"
+        android:name="com.example.stockapp.stock.StockFragment"
+        android:label="StockFragment" />
+    <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.stockapp.search.SearchFragment"
-        android:label="fragment_search" />
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>

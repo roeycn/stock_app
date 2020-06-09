@@ -1,105 +1,103 @@
 package com.example.stockapp.search
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stockapp.R
-import com.example.stockapp.databinding.FragmentSearchBinding
-import com.example.stockapp.domain.StockDataModel
 
+import com.example.stockapp.R
+import com.example.stockapp.databinding.FragmentOverviewBinding
+import com.example.stockapp.databinding.FragmentSearchBinding
+import com.example.stockapp.databinding.FragmentStockBinding
+import com.example.stockapp.domain.StockDataModel
+import com.example.stockapp.overview.OverviewAdapter
+import com.example.stockapp.stock.StockAdapter
+import com.example.stockapp.stock.StockViewModel
+import kotlinx.android.synthetic.main.fragment_overview.view.*
+import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.list_item_car.view.*
+import java.util.ArrayList
+import java.util.zip.Inflater
+
+/**
+ * A simple [Fragment] subclass.
+ * Use the [SearchFragment.newInstance] factory method to
+ * create an instance of this fragment.
+ */
 class SearchFragment : Fragment() {
 
-    private val viewModel: StockViewModel by lazy {
-        //  ViewModelProviders.of(this).get(StockViewModel::class.java)
-
+    private val viewModel: SearchViewModel by lazy {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        ViewModelProviders.of(this, StockViewModel.Factory(activity.application))
-            .get(StockViewModel::class.java)
-    }
-
-    /**
-     * RecyclerView Adapter for converting a list of Video to cards.
-     */
-    private var viewModelAdapter: StockAdapter? = null
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.stocklist.observe(viewLifecycleOwner, Observer<List<StockDataModel>> { stocks ->
-            stocks?.apply {
-                viewModelAdapter?.stocks = stocks
-            }
-        })
+        ViewModelProviders.of(this, SearchViewModel.Factory(activity.application))
+            .get(SearchViewModel::class.java)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
 
-        //return inflater.inflate(com.example.qaapp.R.layout.fragment_mars, parent, false);
         var binding = FragmentSearchBinding.inflate(inflater)
-
         binding.setLifecycleOwner(this)
-
         binding.viewModel = viewModel
 
+        viewModel.loadData()
 
-        viewModelAdapter = StockAdapter(StockClick {
-            // When a video is clicked this block or lambda will be called by DevByteAdapter
+        binding.countryList.layoutManager = GridLayoutManager(activity, 2)
+        binding.countryList.adapter = CountryAdapter(viewModel.displayList, this.requireContext())
 
-            // context is not around, we can safely discard this click since the Fragment is no
-            // longer on the screen
-            val packageManager = context?.packageManager ?: return@StockClick
-
-            // Try to generate a direct intent to the YouTube app
-//            var intent = Intent(Intent.ACTION_VIEW, it.launchUri)
-//            if (intent.resolveActivity(packageManager) == null) {
-//                // YouTube app isn't found, use the web url
-//                intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
-//            }
-//            startActivity(intent)
-        })
-
-        binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = viewModelAdapter
-        }
-
-        binding.searchButton.setOnClickListener() {
-            Toast.makeText(
-                this.context,
-                "search button clicked with: " + viewModel.getText().value,
-                Toast.LENGTH_LONG
-            ).show()
-            viewModel.startSearch()
-        }
-
-        viewModel.searchButtonClicked.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                // viewModel.getSearchResults(viewModel.editTextData.toString(), "demo")
-                viewModel.getSearchResults(viewModel.getText().value.toString(), "demo")
-                viewModel.stopSearch()
-            }
-        })
-
-        viewModel.editTextData.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Toast.makeText(
-                    this.context,
-                    "edit text changed to: " + viewModel.getText().value,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-
+        setHasOptionsMenu(true)
         return binding.root
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
+        inflater.inflate(R.menu.search_menu, menu)
+
+        val searchItem = menu.findItem(R.id.menu_search)
+        if(searchItem != null){
+            val searchView = searchItem.actionView as SearchView
+            val editext = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+            editext.hint = "Search here..."
+
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.displayList.clear()
+                    if(newText!!.isNotEmpty()){
+                        val search = newText.toLowerCase()
+                        viewModel.countries.forEach {
+                            if(it.toLowerCase().startsWith(search)){
+                                viewModel.displayList.add(it)
+                            }
+                        }
+                    }else{
+                        viewModel.displayList.addAll(viewModel.countries)
+                    }
+                    country_list.adapter?.notifyDataSetChanged()
+                    return true
+                }
+
+            })
+        }
+        return super.onCreateOptionsMenu(menu, inflater)
+
+    }
+
 
     /**
      * Click listener for Videos. By giving the block a name it helps a reader understand what it does.
@@ -114,5 +112,9 @@ class SearchFragment : Fragment() {
         fun onClick(stock: StockDataModel) = block(stock)
     }
 
+
+
 }
+
+
 

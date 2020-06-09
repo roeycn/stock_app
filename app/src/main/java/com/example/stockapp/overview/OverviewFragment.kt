@@ -1,16 +1,18 @@
 package com.example.stockapp.overview
 
+import android.content.Intent
+import com.example.stockapp.R
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.stockapp.SecondActivity
 import com.example.stockapp.database.Cars
 import com.example.stockapp.databinding.FragmentOverviewBinding
+
 
 /**
  * A simple [Fragment] subclass.
@@ -18,7 +20,31 @@ import com.example.stockapp.databinding.FragmentOverviewBinding
  * [OverviewFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
  * Use the [OverviewFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * create an instance of this fragment.@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+getMenuInflater().inflate(R.menu.search_action_bar_menu, menu);
+
+Activity activity = this;
+SearchManager searchManager =
+(SearchManager) getSystemService(Context.SEARCH_SERVICE);
+SearchView searchView = (SearchView) MenuItemCompat
+.getActionView(menu.findItem(R.id.action_search));
+
+searchView.setSearchableInfo(
+searchManager.getSearchableInfo(getComponentName()));
+searchView.setQueryHint("Search for users...");
+String [] columNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
+int [] viewIds = { android.R.id.text1 };
+CursorAdapter adapter = new SimpleCursorAdapter(this,
+android.R.layout.simple_list_item_1, null, columNames, viewIds);
+searchView.setSuggestionsAdapter(adapter);
+
+
+searchView.setOnSuggestionListener(getOnSuggestionClickListener());
+searchView.setOnQueryTextListener(getOnQueryTextListener(activity, adapter));
+
+return true;
+}
  */
 class OverviewFragment : Fragment() {
 
@@ -90,19 +116,55 @@ class OverviewFragment : Fragment() {
             }
         })
 
-        binding.searchStocks.setOnClickListener() {
+        binding.goToSecondActivity.setOnClickListener() {
+            val intent = Intent(activity, SecondActivity::class.java)
+            startActivity(intent)
+        }
+
+
+
+
+
+        binding.stocks.setOnClickListener() {
             viewModel.navigateStockFragment()
         }
 
         viewModel.navigateToStock.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(OverviewFragmentDirections.actionOverviewFragmentToSearchFragment())
+                this.findNavController().navigate(OverviewFragmentDirections.actionOverviewFragmentToStockFragment())
                 viewModel.navigateStockFragmentComplete()
             }
         })
 
+        binding.searchButton.setOnClickListener() {
+            viewModel.navigateSearchFragment()
+        }
+
+        viewModel.navigateToSearch.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(OverviewFragmentDirections.actionOverviewFragmentToSearchFragment())
+                viewModel.navigateSearchFragmentComplete()
+            }
+        })
+
+
+
+
+
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return binding.root
     }
+
+
+//    /**
+//     * Inflates the overflow menu that contains filtering options.
+//     */
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.search_menu, menu)
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
+
 
 }
