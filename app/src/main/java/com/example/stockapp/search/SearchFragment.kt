@@ -3,9 +3,8 @@ package com.example.stockapp.search
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.lifecycle.Observer
@@ -56,9 +55,50 @@ class SearchFragment : Fragment() {
         binding.countryList.layoutManager = GridLayoutManager(activity, 2)
         binding.countryList.adapter = CountryAdapter(viewModel.displayList, this.requireContext())
 
+
+        // AutoCompleteTextView
+  //      val autotextView = view?.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
+
+        val languages
+                = resources.getStringArray(R.array.Languages)
+
+        val adapter = ArrayAdapter<String>(this.activity,
+            android.R.layout.simple_dropdown_item_1line, viewModel.countries)
+
+       // autoCompleteTextView.setAdapter(adapter)
+        binding.autoCompleteTextView.setAdapter(adapter)
+      //  autotextView?.setAdapter(adapter)
+
+        // Auto complete threshold
+        // The minimum number of characters to type to show the drop down
+        binding.autoCompleteTextView.threshold = 1
+
+        // Set an item click listener for auto complete text view
+        binding.autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener{
+                parent,view,position,id->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            // Display the clicked item using toast
+            Toast.makeText(this.context,"Selected : $selectedItem",Toast.LENGTH_SHORT).show()
+        }
+
+        // Set a dismiss listener for auto complete text view
+        binding.autoCompleteTextView.setOnDismissListener {
+            Toast.makeText(this.context,"Suggestion closed.",Toast.LENGTH_SHORT).show()
+        }
+
+        // Set a focus change listener for auto complete text view
+        binding.autoCompleteTextView.onFocusChangeListener = View.OnFocusChangeListener{
+                view, b ->
+            if(b){
+                // Display the suggestion dropdown on focus
+                binding.autoCompleteTextView.showDropDown()
+            }
+        }
+
         setHasOptionsMenu(true)
         return binding.root
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
