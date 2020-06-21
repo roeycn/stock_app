@@ -14,13 +14,14 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/country_list"
-            android:layout_width="413dp"
-            android:layout_height="352dp"
-            android:layout_marginBottom="376dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="405dp"
+            android:layout_height="116dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginEnd="3dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:context="com.example.stockapp.MainActivity" />
 
         <AutoCompleteTextView
@@ -29,11 +30,13 @@
             android:layout_height="57dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginBottom="222dp"
-            android:text="Search stocks..."
+            android:layout_marginBottom="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.476"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/country_list"
+            app:layout_constraintVertical_bias="0.706" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

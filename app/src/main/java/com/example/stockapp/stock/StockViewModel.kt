@@ -9,6 +9,7 @@ import com.example.stockapp.database.getDatabase
 import com.example.stockapp.network.*
 import com.example.stockapp.repository.StocksRepository
 import kotlinx.coroutines.*
+import retrofit2.await
 import java.lang.Exception
 import java.util.ArrayList
 
@@ -126,7 +127,7 @@ class StockViewModel(application: Application) : ViewModel() {
             var searchResponse = StockApi.retrofitService.getSearchResults(keywords, apikey)
             try {
                 // this will run on a thread managed by Retrofit
-                val result = searchResponse.await()
+                val result = searchResponse.await()    // change await import from deffered
                 _searchResponse.value = result
             } catch (e: Exception) {
                 _searchResponse.value = null

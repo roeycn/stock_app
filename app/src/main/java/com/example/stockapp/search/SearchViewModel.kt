@@ -1,18 +1,31 @@
 package com.example.stockapp.search
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.stockapp.database.getDatabase
+import com.example.stockapp.network.StockApi
+import com.example.stockapp.network.StockApiService
+import com.example.stockapp.network.StockApiServiceBuilder
+import com.example.stockapp.network.StockSearchProperty
 import com.example.stockapp.repository.StocksRepository
 import kotlinx.coroutines.*
 import java.util.ArrayList
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 enum class StockApiStatus { LOADING, ERROR, DONE }
 
 class SearchViewModel(application: Application) : ViewModel() {
+
+   private val _searchResponse = MutableLiveData<StockSearchProperty>()
+   val searchResponse: LiveData<StockSearchProperty>
+      get() = _searchResponse
 
     // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<StockApiStatus>()
@@ -56,6 +69,86 @@ class SearchViewModel(application: Application) : ViewModel() {
         }
     }
 
+
+     //todo  -- allmost finished, now when user type char - request to search is sending good!!!
+       //todo - just need to wait till the response is arriving and update _searchResponse - thinking about
+      //todo wait till coroutineScope finishing
+
+//     fun getSearchResults(keywords: String, apikey: String) {
+//        coroutineScope.launch {
+//           var searchResponse = StockApi.retrofitService.getSearchResults(keywords, apikey)
+//           try {
+//              // this will run on a thread managed by Retrofit
+//              val result = searchResponse.await()
+//              _searchResponse.value = result
+//
+//              Log.i("aaaaa","aaaaa   text entered: " + (_searchResponse.value))
+//              Log.i("aaaaa", "aaaaa stocks size is: " + (_searchResponse.value?.metaData?.size))
+//
+//           } catch (e: Exception) {
+//              _searchResponse.value = null
+//           }
+//        }
+//     }
+
+        fun getSearchResults(keywords: String, apikey: String) {
+       //       var response = StockApi.retrofitService.getSearchResults(keywords, apikey)
+//              try {
+//                 // this will run on a thread managed by Retrofit
+//                 val result = response.getCompleted()
+//                 _searchResponse.value = result
+//
+//                 Log.i("aaaaa","aaaaa   text entered: " + (searchResponse.value))
+//                 Log.i("aaaaa", "aaaaa stocks size is: " + (searchResponse.value?.metaData?.size))
+//
+//              } catch (e: Exception) {
+//                 _searchResponse.value = null
+//              }
+
+           val request = StockApiServiceBuilder.buildService(StockApiService::class.java)
+           val call = request.getSearchResults(keywords, apikey)
+
+           call.enqueue(object : Callback<StockSearchProperty>{
+
+              override fun onResponse(
+                 call: Call<StockSearchProperty>,
+                 response: Response<StockSearchProperty>
+              ) {
+                 if (response.isSuccessful) {
+
+//                    val stocksNameList: MutableList<String> = ArrayList()
+//                    val str = response.body()?.metaData
+//                    for (s in str.orEmpty()) {
+//                       Log.i("metadata",s.name)
+//                       println("aaaaaaaa printing the metaddata: " +s.name)
+//                       stocksNameList.add(s.name)
+//                    }
+                    _searchResponse.value = response.body()
+                 }
+              }
+
+              override fun onFailure(call: Call<StockSearchProperty>, t: Throwable) {
+                 _searchResponse.value = null
+              }
+
+
+           }
+
+           )
+
+
+        }
+
+   fun getStocksNameList(): MutableList<String> {
+      val stocksNameList: MutableList<String> = ArrayList()
+      val str = searchResponse.value?.metaData
+      for (s in str.orEmpty()) {
+         Log.i("metadata",s.name)
+         println("aaaaaaaa printing the metaddata: " +s.name)
+         stocksNameList.add(s.name)
+      }
+      return stocksNameList
+   }
 
     var countries:MutableList<String> = ArrayList()
     var displayList:MutableList<String> = ArrayList()
@@ -260,4 +353,6 @@ class SearchViewModel(application: Application) : ViewModel() {
         countries.add("Zimbabwe")
         displayList.addAll(countries)
     }
+
+
 }
