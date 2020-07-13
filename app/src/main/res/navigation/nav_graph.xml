@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_overviewFragment_to_stockFragment"
             app:destination="@id/stockFragment" />
+        <action
+            android:id="@+id/action_overviewFragment_to_watchListFragment"
+            app:destination="@id/watchListFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -45,5 +48,19 @@
         android:id="@+id/searchFragment"
         android:name="com.example.stockapp.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_stockInfoFragment"
+            app:destination="@id/stockInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchListFragment"
+        android:name="com.example.stockapp.watchlist.WatchListFragment"
+        android:label="fragment_watch_list"
+        tools:layout="@layout/fragment_watch_list" />
+    <fragment
+        android:id="@+id/stockInfoFragment"
+        android:name="com.example.stockapp.stockinfo.StockInfoFragment"
+        android:label="fragment_stock_info"
+        tools:layout="@layout/fragment_stock_info" />
 </navigation>

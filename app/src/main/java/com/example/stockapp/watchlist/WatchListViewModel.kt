@@ -1,35 +1,31 @@
-package com.example.stockapp.search
+package com.example.stockapp.watchlist
 
 import android.app.Application
-import android.content.Context
-import android.content.res.AssetFileDescriptor
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.stockapp.database.getDatabase
+import com.example.stockapp.network.StockApi
 import com.example.stockapp.network.StockApiService
 import com.example.stockapp.network.StockApiServiceBuilder
 import com.example.stockapp.network.StockSearchProperty
 import com.example.stockapp.repository.StocksRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
+import java.util.ArrayList
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.*
-import java.util.*
 
 
 enum class StockApiStatus { LOADING, ERROR, DONE }
 
-class SearchViewModel(application: Application) : ViewModel() {
+class WatchListViewModel(application: Application) : ViewModel() {
 
-   private val _searchResponse = MutableLiveData<StockSearchProperty>()
-   val searchResponse: LiveData<StockSearchProperty>
-      get() = _searchResponse
+    private val _searchResponse = MutableLiveData<StockSearchProperty>()
+    val searchResponse: LiveData<StockSearchProperty>
+        get() = _searchResponse
 
     // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<StockApiStatus>()
@@ -56,27 +52,27 @@ class SearchViewModel(application: Application) : ViewModel() {
 
     init {
         //getStockData()
-     //   coroutineScope.launch {
-       //     stocksRepository.refreshStocks()
-        }
+        //   coroutineScope.launch {
+        //     stocksRepository.refreshStocks()
+    }
 
     /**
      * Factory for constructing StockViewModel with parameter
      */
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(WatchListViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return SearchViewModel(app) as T
+                return WatchListViewModel(app) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
 
 
-     //todo  -- allmost finished, now when user type char - request to search is sending good!!!
-       //todo - just need to wait till the response is arriving and update _searchResponse - thinking about
-      //todo wait till coroutineScope finishing
+    //todo  -- allmost finished, now when user type char - request to search is sending good!!!
+    //todo - just need to wait till the response is arriving and update _searchResponse - thinking about
+    //todo wait till coroutineScope finishing
 
 //     fun getSearchResults(keywords: String, apikey: String) {
 //        coroutineScope.launch {
@@ -95,8 +91,8 @@ class SearchViewModel(application: Application) : ViewModel() {
 //        }
 //     }
 
-        fun getSearchResults(keywords: String, apikey: String) {
-       //       var response = StockApi.retrofitService.getSearchResults(keywords, apikey)
+    fun getSearchResults(keywords: String, apikey: String) {
+        //       var response = StockApi.retrofitService.getSearchResults(keywords, apikey)
 //              try {
 //                 // this will run on a thread managed by Retrofit
 //                 val result = response.getCompleted()
@@ -109,16 +105,16 @@ class SearchViewModel(application: Application) : ViewModel() {
 //                 _searchResponse.value = null
 //              }
 
-           val request = StockApiServiceBuilder.buildService(StockApiService::class.java)
-           val call = request.getSearchResults(keywords, apikey)
+        val request = StockApiServiceBuilder.buildService(StockApiService::class.java)
+        val call = request.getSearchResults(keywords, apikey)
 
-           call.enqueue(object : Callback<StockSearchProperty>{
+        call.enqueue(object : Callback<StockSearchProperty>{
 
-              override fun onResponse(
-                 call: Call<StockSearchProperty>,
-                 response: Response<StockSearchProperty>
-              ) {
-                 if (response.isSuccessful) {
+            override fun onResponse(
+                call: Call<StockSearchProperty>,
+                response: Response<StockSearchProperty>
+            ) {
+                if (response.isSuccessful) {
 
 //                    val stocksNameList: MutableList<String> = ArrayList()
 //                    val str = response.body()?.metaData
@@ -128,36 +124,36 @@ class SearchViewModel(application: Application) : ViewModel() {
 //                       stocksNameList.add(s.name)
 //                    }
                     _searchResponse.value = response.body()
-                 }
-              }
+                }
+            }
 
-              override fun onFailure(call: Call<StockSearchProperty>, t: Throwable) {
-                 _searchResponse.value = null
-              }
-
-
-           }
-
-           )
+            override fun onFailure(call: Call<StockSearchProperty>, t: Throwable) {
+                _searchResponse.value = null
+            }
 
 
         }
 
-   fun getStocksNameList(): MutableList<String> {
-      val stocksNameList: MutableList<String> = ArrayList()
-      val str = searchResponse.value?.metaData
-      for (s in str.orEmpty()) {
-         Log.i("metadata",s.name)
-         println("aaaaaaaa printing the metaddata: " +s.name)
-         stocksNameList.add(s.name)
-      }
-      return stocksNameList
-   }
+        )
+
+
+    }
+
+    fun getStocksNameList(): MutableList<String> {
+        val stocksNameList: MutableList<String> = ArrayList()
+        val str = searchResponse.value?.metaData
+        for (s in str.orEmpty()) {
+            Log.i("metadata",s.name)
+            println("aaaaaaaa printing the metaddata: " +s.name)
+            stocksNameList.add(s.name)
+        }
+        return stocksNameList
+    }
 
     var countries:MutableList<String> = ArrayList()
     var displayList:MutableList<String> = ArrayList()
 
-     fun loadData(){
+    fun loadData(){
         countries.add("Afghanistan")
         countries.add("Albania")
         countries.add("Algeria")
@@ -358,87 +354,5 @@ class SearchViewModel(application: Application) : ViewModel() {
         displayList.addAll(countries)
     }
 
-   public fun readFromFile(context: Context?): String? {
-      var ret = ""
-      try {
-        // val inputStream: InputStream = context!!.openFileInput("nasdaqlisted.txt")
-
-         val descriptor: AssetFileDescriptor = context!!.getAssets().openFd("nasdaqlisted.txt")
-         val f = BufferedReader(FileReader(descriptor.fileDescriptor))
-
-         val line = f.readLine()
-         while (line != null) { // do stuff
-            Log.d("TAG", line)
-         }
-
-    //     val inputStream: InputStream = context!!.getAssets().open("nasdaqlisted.txt");
-
-      //   val inputStream: InputStream = context!!.openFileInput(  context.assets.open())
-
-
-
-//         if (inputStream != null) {
-//            val inputStreamReader = InputStreamReader(inputStream)
-//            val bufferedReader = BufferedReader(inputStreamReader)
-//            var receiveString: String? = ""
-//            val stringBuilder = StringBuilder()
-//            while (bufferedReader.readLine().also({ receiveString = it }) != null) {
-//               stringBuilder.append("\n").append(receiveString)
-//            }
-//            inputStream.close()
-//            ret = stringBuilder.toString()
-//         }
-      } catch (e: FileNotFoundException) {
-         Log.e("login activity", "File not found: " + e.toString())
-      } catch (e: IOException) {
-         Log.e("login activity", "Can not read file: " + e.toString())
-      }
-     return TODO()
-   }
-
-  public fun readStocksListFile(context: Context?) : String {
-     var fileText: String = ""
-     try {
-        fileText =
-           context!!.applicationContext.assets.open("nasdaqlisted.txt")?.bufferedReader().use {
-              it!!.readText()
-           }
-        Log.i("file_read", fileText)
-     } catch (e: FileNotFoundException) {
-        Log.e("login activity", "File not found: " + e.toString())
-     }
-     return fileText
-  }
-
-   fun readFileAsLinesUsingBufferedReader(context: Context?): HashMap<String,String> {
-      var list: List<String>
-
-      var nasdaqlisted: String = "nasdaqlisted.txt"
-      var nasdaqtraded: String = "nasdaqtraded.txt"
-
-      var file: String = nasdaqtraded
-      list = context!!.applicationContext.assets.open(file)?.bufferedReader()!!.readLines()
-
-      val hashMap: HashMap<String, String> = HashMap() //define empty hashmap
-
-      if (file.equals(nasdaqlisted)) {
-         for (row in list) {
-            val stockSymbol: String = row.substringBefore('|')
-            val stockAfterSymbol: String = row.substringAfter('|')
-            val stockName: String = stockAfterSymbol.substringBefore('.')
-            hashMap.put(stockSymbol, stockName)
-         }
-      }else if (file.equals(nasdaqtraded)) {
-         for (row in list) {
-            val stockAfterSymbol: String = row.substringAfter('|')
-            val stockSymbol: String = stockAfterSymbol.substringBefore('|')
-
-            val stockAfterSecondSymbol: String = stockAfterSymbol.substringAfter('|')
-            val stockName: String = stockAfterSecondSymbol.substringBefore('.')
-            hashMap.put(stockSymbol, stockName)
-         }
-      }
-      return hashMap
-   }
 
 }

@@ -27,6 +27,10 @@ class OverviewModel : ViewModel() {
     val navigateToSearch : LiveData<Boolean>
         get() = _navigateToSearch
 
+    private val _navigateToWatchList = MutableLiveData<Boolean>()
+    val navigateToWatchList : LiveData<Boolean>
+        get() = _navigateToWatchList
+
     fun setCarCompany(list: List<Cars>) {
         _mCarCompany.value = list
     }
@@ -61,6 +65,14 @@ class OverviewModel : ViewModel() {
 
     fun navigateSearchFragmentComplete() {
         _navigateToSearch.value = null
+    }
+
+    fun navigateWatchListFragment() {
+        _navigateToWatchList.value = true
+    }
+
+    fun navigateWatchListFragmentComplete() {
+        _navigateToWatchList.value = null
     }
 
 

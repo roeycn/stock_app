@@ -1,71 +1,118 @@
 package com.example.stockapp.search
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.example.stockapp.R
-import com.example.stockapp.databinding.StockItemBinding
-import com.example.stockapp.domain.StockDataModel
 
-/**
- * RecyclerView Adapter for setting up data binding on the items in the list.
- */
-class SearchAdapter(val callback: SearchFragment.StockClick) : RecyclerView.Adapter<StockViewHolder>() {
 
-    /**
-     * The stocks that our Adapter will show
-     */
-    var stocks: List<StockDataModel> = emptyList()
-        set(value) {
-            field = value
-            // For an extra challenge, update this to use the paging library.
+class SearchAdapter(context: Context, @LayoutRes private val layoutResource: Int, private val allStocks: List<SearchFragment.SearchResultDao>):
+    ArrayAdapter<SearchFragment.SearchResultDao>(context, layoutResource, allStocks), Filterable {
 
-            // Notify any registered observers that the data set has changed. This will cause every
-            // element in our RecyclerView to be invalidated.
-            notifyDataSetChanged()
-        }
+    private var mStocks: List<SearchFragment.SearchResultDao> = allStocks
 
- //   val stocklist = stocksRepository.stocks
-
-    /**
-     * Called when RecyclerView needs a new {@link ViewHolder} of the given type to represent
-     * an item.
-     */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockViewHolder {
-        val withDataBinding: StockItemBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            StockViewHolder.LAYOUT,
-            parent,
-            false
-        )
-        return StockViewHolder(withDataBinding)
+    override fun getCount(): Int {
+       return mStocks.size
     }
 
-    /**
-     * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link ViewHolder#itemView} to reflect the item at the given
-     * position.
-     */
-    override fun onBindViewHolder(holder: StockViewHolder, position: Int) {
-        holder.viewDataBinding.also {
-            it.stock = stocks[position]
-            //   it.stock = callback
-        }
+    override fun getItem(index: Int): SearchFragment.SearchResultDao? {
+        return mStocks.get(index)
     }
 
-    override fun getItemCount() = stocks.size
+    override fun getItemId(index: Int): Long {
+        return index.hashCode().toLong()
+    }
 
-}
+    // help in scrolling results issue
+//    override fun getViewTypeCount(): Int {
+//        return count
+//    }
 
-/**
- * ViewHolder for stock items. All work is done by data binding.
- */
-class StockViewHolder(val viewDataBinding: StockItemBinding) :
-    RecyclerView.ViewHolder(viewDataBinding.root) {
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.stock_item
+    override fun getItemViewType(index: Int): Int {
+        return index;
+    }
+
+
+    private lateinit var view: View
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+
+        if (convertView == null) {
+            view = LayoutInflater.from(context).inflate(layoutResource, parent, false)
+        }
+
+        val textViewSymbol: TextView = view.findViewById(android.R.id.text1)
+        val textViewName: TextView = view.findViewById(android.R.id.text2)
+
+        val searchResultDao: SearchFragment.SearchResultDao? = getItem(position)
+
+        if (searchResultDao != null) {
+                textViewSymbol.text = searchResultDao.stockSymbol
+                if (searchResultDao.stockName.length < 30) {
+                textViewName.text = searchResultDao.stockName
+                } else {
+                textViewName.text = searchResultDao.stockName.substring(0, 30)
+                }
+        } else {
+            textViewName.text = "Oops. There was a problem"
+        }
+        return view
+    }
+
+    fun <T> getSubList(list: List<T>, start: Int, end: Int): MutableList<T> {
+        return list.subList(start, end + 1).toMutableList()
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun publishResults( charSequence: CharSequence?, filterResults: Filter.FilterResults) {
+
+                val queryString = charSequence?.toString()?.toLowerCase()
+
+                if (filterResults != null) {
+                    mStocks = filterResults.values as List<SearchFragment.SearchResultDao>
+
+                    // limit the results to 3 ... having scrolling results issue
+                    if (mStocks.size > 3) {
+
+                        val subList = getSubList(mStocks, 1, 3)
+
+                        for (entry in mStocks) {
+                            if (entry.stockSymbol.toLowerCase().equals(queryString)) {
+                                subList.removeAt(0)
+                                subList.add(0, entry)
+                            }
+                        }
+
+                        mStocks = subList!!
+                    }
+
+                    notifyDataSetChanged()
+                } else {
+                    notifyDataSetInvalidated()
+                }
+            }
+
+            override fun performFiltering(charSequence: CharSequence?): Filter.FilterResults {
+                val queryString = charSequence?.toString()?.toLowerCase()
+                val filterResults = Filter.FilterResults()
+                synchronized(filterResults) {
+                filterResults.values = if (queryString == null || queryString.isEmpty())
+                    allStocks
+                else
+                    allStocks.filter {
+                        it.stockSymbol.toLowerCase().startsWith(queryString) ||
+                                it.stockName.toLowerCase().startsWith(queryString)
+                    }
+                return filterResults
+               }
+            }
+        }
+
     }
 }

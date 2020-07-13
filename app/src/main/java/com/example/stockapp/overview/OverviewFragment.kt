@@ -147,6 +147,17 @@ class OverviewFragment : Fragment() {
             }
         })
 
+        binding.watchListButton.setOnClickListener() {
+            viewModel.navigateWatchListFragment()
+        }
+
+        viewModel.navigateToWatchList.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(OverviewFragmentDirections.actionOverviewFragmentToWatchListFragment())
+                viewModel.navigateWatchListFragmentComplete()
+            }
+        })
+
 
 
 

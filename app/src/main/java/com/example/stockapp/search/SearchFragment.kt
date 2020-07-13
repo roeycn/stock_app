@@ -3,28 +3,22 @@ package com.example.stockapp.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.fragment.findNavController
+import com.example.stockapp.R
 import com.example.stockapp.databinding.FragmentSearchBinding
 import com.example.stockapp.domain.StockDataModel
+import com.example.stockapp.overview.OverviewFragmentDirections
+import com.example.stockapp.stockinfo.StockInfoFragment
+import kotlinx.android.synthetic.main.activity_second.view.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import android.util.Log
-import androidx.lifecycle.Observer
-import com.example.stockapp.R
-import com.example.stockapp.network.StockApiService
-import com.example.stockapp.network.StockApiServiceBuilder
-import com.example.stockapp.network.StockSearchProperty
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.ArrayList
+import kotlinx.android.synthetic.main.fragment_stock.view.*
+import java.util.*
 
 
 /**
@@ -36,6 +30,7 @@ class SearchFragment : Fragment() {
 
 
     public var stocksNameList: MutableList<String> = ArrayList()
+    public lateinit var stockHashMap : HashMap<String,String>
 
     private val alphavantageFreeApiKey = "CITUC4CO27CTCF4D"
 
@@ -55,175 +50,147 @@ class SearchFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
-        viewModel.loadData()
+        stockHashMap = viewModel.readFileAsLinesUsingBufferedReader(context)
 
-        binding.countryList.layoutManager = GridLayoutManager(activity, 2)
-        binding.countryList.adapter = CountryAdapter(viewModel.displayList, this.requireContext())
-
-        // AutoCompleteTextView
-        //      val autotextView = view?.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
-
-
-
-     //   val languages = resources.getStringArray(R.array.Languages)
+        binding.autoComplete.hint = "Search here ..."
+        binding.autoComplete.setHintTextColor(R.color.DeepPink.toInt())
+        binding.autoComplete.threshold = 1
+        binding.autoComplete.setDropDownBackgroundResource(R.color.AntiqueWhite)
+       // binding.autoComplete.setDropDownVerticalOffset(1);
 
 
-//        val adapter = ArrayAdapter<String>(this.activity,
-////            android.R.layout.simple_dropdown_item_1line, stocksNameList)
-////        binding.autoCompleteTextView.setAdapter(adapter)
+        val results = getSearchResultsFromStockList()
+        val adapter = SearchAdapter(context!!, android.R.layout.simple_expandable_list_item_2, results)
+        binding.autoComplete.setAdapter(adapter)
 
-
-        //adapter.notifyDataSetChanged()
-
-
-        viewModel.searchResponse.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Log.i("ccccc","ccccc observe - searchResponse changed")
-//                stocksNameList.clear()
-//                adapter.clear()
-//                stocksNameList = viewModel.getStocksNameList()
-//                adapter.addAll(stocksNameList)
-//                adapter.notifyDataSetChanged()
+        binding.autoComplete.setOnItemClickListener() { parent, _, position, id ->
+            val selectedStock = parent.adapter.getItem(position) as SearchResultDao?
+            val stockName: String
+            if (selectedStock?.stockName?.length!! < 30) {
+                stockName = selectedStock?.stockName
+            } else {
+                stockName = selectedStock?.stockName?.substring(0, 30)
             }
-        })
-
-        // Auto complete threshold
-        // The minimum number of characters to type to show the drop down
-        binding.autoCompleteTextView.threshold = 1
-     //   binding.autoCompleteTextView.requestFocus()
-        binding.autoCompleteTextView.clearFocus()
-        binding.autoCompleteTextView.hint = "Search here..."
-
-        binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
-            @Override
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
-
-            @Override
-            override fun onTextChanged(
-                s: CharSequence, start: Int, before: Int,
-                count: Int
-            ) {
-                getSearchResults(binding.autoCompleteTextView.text.toString(), alphavantageFreeApiKey, binding)
-
-                Log.i("bbbbb","bbbbb  text entered: " + (binding.autoCompleteTextView.text.toString()))
-                Log.i("bbbbb", "bbbbb   stocks size is" + (viewModel.searchResponse.value?.metaData?.size))
-                Log.i("bbbbb", "bbbbb   stocks name list: " + (viewModel.getStocksNameList()))
-
-//                adapter.addAll(stocksNameList)
-//                adapter.notifyDataSetChanged()
-            }
-
-            override fun afterTextChanged(s: Editable) {}
-        })
-
-
-        // Set an item click listener for auto complete text view
-        binding.autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener{
-                parent,view,position,id->
-            val selectedItem = parent.getItemAtPosition(position).toString()
-            // Display the clicked item using toast
-            Toast.makeText(this.context,"Selected : $selectedItem",Toast.LENGTH_SHORT).show()
+            binding.autoComplete.setText(stockName)
         }
 
-        // Set a dismiss listener for auto complete text view
-        binding.autoCompleteTextView.setOnDismissListener {
-            Toast.makeText(this.context,"setOnDismissListener-Suggestion closed.",Toast.LENGTH_SHORT).show()
-        }
-
-        // Set a focus change listener for auto complete text view
-        binding.autoCompleteTextView.onFocusChangeListener = View.OnFocusChangeListener{
-                view, b ->
-//            if(b){
-//                // Display the suggestion dropdown on focus
-//                binding.autoCompleteTextView.showDropDown()
-//            }
-//            Toast.makeText(this.context,"onFocusChangeListener",Toast.LENGTH_SHORT).show()
-        }
-
-
-        setHasOptionsMenu(true)
+        // move search to ToolBar
+        setHasOptionsMenu(false)
         return binding.root
     }
 
-    fun getSearchResults(
-        keywords: String,
-        apikey: String,
-        binding: FragmentSearchBinding
-    ) {
-        val request = StockApiServiceBuilder.buildService(StockApiService::class.java)
-        val call = request.getSearchResults(keywords, apikey)
-
-        call.enqueue(object : Callback<StockSearchProperty> {
-
-            override fun onResponse(
-                call: Call<StockSearchProperty>,
-                response: Response<StockSearchProperty>
-            ) {
-                if (response.isSuccessful) {
-                    stocksNameList.clear()
-                    val str = response.body()?.metaData
-                    for (s in str.orEmpty()) {
-                       Log.i("metadata",s.name)
-                       println("aaaaaaaa printing the metaddata: " +s.name)
-                       stocksNameList.add(s.name)
-                    }
-
-                val adapter = ArrayAdapter<String>(context,
-                android.R.layout.simple_dropdown_item_1line, stocksNameList)
-                binding.autoCompleteTextView.setAdapter(adapter)
-                adapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun onFailure(call: Call<StockSearchProperty>, t: Throwable) {
-                Toast.makeText(context,"onFocusChangeListener",Toast.LENGTH_SHORT).show()
-            }
-        })
+    private fun getSearchResultsFromStockList(): List<SearchResultDao> {
+     val combinedData = combineStockSymboleAndName()
+     return combinedData
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
-        inflater.inflate(R.menu.search_menu, menu)
+        // Inflate the search menu action bar.
+        inflater.inflate(R.menu.search_stocks_menu, menu)
 
-        val searchItem = menu.findItem(R.id.menu_search)
-        if(searchItem != null){
-            val searchView = searchItem.actionView as SearchView
-            val editext = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-            editext.hint = "Search here..."
+        // Get the search menu
+        val searchItem = menu.findItem(R.id.menu_search_stocks)
 
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return true
+        if (searchItem != null) {
+            // Get the autoCompleteText object
+            val autoCompleteTextView = searchItem.actionView as AutoCompleteTextView
+            autoCompleteTextView.hint = "Search here ..."
+            autoCompleteTextView.setHintTextColor(R.color.DeepPink.toInt())
+            autoCompleteTextView.threshold = 1
+            autoCompleteTextView.setDropDownBackgroundResource(R.color.AntiqueWhite)
+
+            val results = getSearchResultsFromStockList()
+            // using the adapter class
+            val adapter = SearchAdapter(context!!, android.R.layout.simple_list_item_2, results)
+
+            // creating the adapter here
+          //   val stockNameList = ArrayList(stockHashMap.values)
+          //    val adapter = ArrayAdapter<String>(context,
+          //    android.R.layout.simple_dropdown_item_1line, stockNameList)
+
+            autoCompleteTextView.setAdapter(adapter)
+
+            //  adapter.notifyDataSetChanged()
+
+
+            autoCompleteTextView.setOnItemClickListener() { parent, _, position, id ->
+                val selectedStock = parent.adapter.getItem(position) as SearchResultDao?
+               // autoCompleteTextView.setText(selectedStock?.stockName)
+             //   this.findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToStockInfoFragment())
+                Toast.makeText(this.context,"bbbbbb.",Toast.LENGTH_SHORT).show()
+            }
+
+
+            autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+                @Override
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    Log.d("beforeTextChanged", s.toString());
                 }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    viewModel.displayList.clear()
-                    if(newText!!.isNotEmpty()){
-                        val search = newText.toLowerCase()
-                        viewModel.countries.forEach {
-                            if(it.toLowerCase().startsWith(search)){
-                                viewModel.displayList.add(it)
-                            }
-                        }
-                    }else{
-                        viewModel.displayList.addAll(viewModel.countries)
-                    }
-                    country_list.adapter?.notifyDataSetChanged()
-                    return true
+                @Override
+                override fun onTextChanged(
+                    s: CharSequence, start: Int, before: Int,
+                    count: Int
+                ) {
+                   // getSearchResults(searchView.text.toString(), alphavantageFreeApiKey, searchView)
+                   // getSearchResultsFromStockList(searchView)
+                  //  val results = getSearchResultsFromStockList(autoCompleteTextView)
+                    Log.d("onTextChanged", s.toString());
                 }
 
+                @Override
+                override fun afterTextChanged(s: Editable) {
+                    Log.d("afterTextChanged", s.toString());
+                }
             })
-        }
-        return super.onCreateOptionsMenu(menu, inflater)
 
+            // Set an item click listener for auto complete text view
+//            searchView.onItemClickListener = AdapterView.OnItemClickListener{
+//                    parent,view,position,id->
+//                val selectedItem = parent.getItemAtPosition(position).toString()
+//                // Display the clicked item using toast
+//                Toast.makeText(this.context,"Selected : $selectedItem",Toast.LENGTH_SHORT).show()
+//            }
+
+//            searchView.onItemClickListener = AdapterView.OnItemClickListener{
+//                                    parent,view,position,id->
+//                //val selectedItem = parent.getItemAtPosition(position).toString()
+//                // Display the clicked item using toast
+//                //Toast.makeText(this.context,"Selected : $selectedItem",Toast.LENGTH_SHORT).show()
+//                val selectedPoi = parent.adapter.getItem(position) as SearchResultDao?
+//                searchView.setText(selectedPoi?.stockName)
+//           }
+
+
+            // If you need to perform some action after auto complete dropdown has been dismissed
+            autoCompleteTextView.setOnDismissListener {
+                Toast.makeText(this.context,"setOnDismissListener-Suggestion closed.",Toast.LENGTH_SHORT).show()
+            }
+
+            // Set a focus change listener for auto complete text view
+            autoCompleteTextView.onFocusChangeListener = View.OnFocusChangeListener{
+                    view, b ->
+                //            if(b){
+//                // Display the suggestion dropdown on focus
+//                binding.autoCompleteTextView.showDropDown()
+//            }
+//            Toast.makeText(this.context,"onFocusChangeListener",Toast.LENGTH_SHORT).show()
+            }
+
+            return super.onCreateOptionsMenu(menu, inflater)
+
+        }
     }
+
+
 
 
     /**
@@ -239,6 +206,20 @@ class SearchFragment : Fragment() {
         fun onClick(stock: StockDataModel) = block(stock)
     }
 
+    data class SearchResultDao(
+        val stockSymbol: String,
+        val stockName: String
+    )
+
+    private fun combineStockSymboleAndName(): List<SearchResultDao> {
+
+        val allStocks = mutableListOf<SearchResultDao>()
+        for ((key, value) in stockHashMap) {
+            allStocks.add(SearchResultDao(key, value))
+        }
+
+        return allStocks
+    }
 
 
 }
