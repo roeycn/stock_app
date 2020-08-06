@@ -13,8 +13,10 @@ data class StockLastPriceContainer(
 @JsonClass(generateAdapter = true)
 data class StockLastPriceData(
     @Json(name = "01. symbol") val symbol: String,
-    @Json(name = "05. price")val price: String)
-
+    @Json(name = "05. price")val price: String,
+    @Json(name = "06. volume")val volume: String,
+    @Json(name = "07. latest trading day")val latestTradingDay: String,
+    @Json(name = "09. change")val change: String)
 
 /**
  * Convert Network results to database objects
@@ -23,7 +25,10 @@ fun StockLastPriceContainer.asDomainModel(): StockDataModel {
     return stockLastPriceData.let {
         StockDataModel(
             symbol = it.symbol,
-            price = it.price)
+            price = it.price,
+            volume = it.volume,
+            latestTradingDay = it.latestTradingDay,
+            change = it.change)
     }
 }
 
@@ -55,6 +60,9 @@ fun StockLastPriceContainer.asDatabaseModel():DatabaseStock{
     return stockLastPriceData.let {
         DatabaseStock(
             symbol = it.symbol,
-            price = it.price)
+            price = it.price,
+            volume = it.volume,
+            latestTradingDay = it.latestTradingDay,
+            change = it.change)
     }
 }

@@ -20,6 +20,7 @@ object StockApiServiceBuilder {
 
 
     private const val BASE_URL = "https://www.alphavantage.co/"
+   // private val alphavantageFreeApiKey = "CITUC4CO27CTCF4D"
 
 
     /**
@@ -80,12 +81,15 @@ object StockApi {
 }
 
 interface StockApiService {
-    @GET("query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo")
-    fun getStockLastPrice() :
+    // this API returns the latest price and volume information for a security of your choice.
+    @GET("query?function=GLOBAL_QUOTE")
+    fun getStockLastPrice(@Query("symbol") keywords: String,
+                          @Query("apikey") apikey: String) :
             Deferred<StockLastPriceContainer>
 
+    // This API returns intraday time series of the equity specified, covering extended trading hours where applicable
     @GET("query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=demo")
-    fun getStockData() :
+    fun getStockTimeSeriesIntraday() :
             Deferred<StockDailyProperty>
 
     //@GET("query?function=SYMBOL_SEARCH&keywords=Micro&apikey=demo")

@@ -13,6 +13,8 @@ package com.example.stockapp.domain
  */
 data class StockDataModel(
                  val symbol: String,
-                 val price: String) {
-
+                 val price: String,
+                 val volume: String,
+                 val latestTradingDay: String,
+                 val change: String) {
 }

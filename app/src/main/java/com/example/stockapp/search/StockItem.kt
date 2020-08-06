@@ -1,6 +1,10 @@
 package com.example.stockapp.search
 
-    data class StockItem (
-        val stockName: String,
-        val stockSymbol: String
-    )
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class SearchResultDao(
+    val stockSymbol: String,
+    var stockName: String) : Parcelable
+

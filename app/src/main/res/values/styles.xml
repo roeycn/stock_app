@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
@@ -6,17 +6,16 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorPrimaryVariant">@color/primaryLightColor</item>
-
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
-
         <item name="android:textColorPrimary">@color/primaryTextColor</item>
         <item name="android:textColorSecondary">@color/secondaryColor</item>
-
         <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
-
         <item name="shapeAppearanceSmallComponent">@style/AppShapeAppearance.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/AppShapeAppearance.MediumComponent</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
 
         <!--  <item name="autoCompleteTextViewStyle">@style/Autocomplete</item>    -->
       </style>
@@ -43,7 +42,45 @@
           <item name="colorControlActivated">#b4e1ef</item>
       </style>
 
+    // Toolbar
+    <style name="Widget.StockChamp.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorAccent</item>
+        <item name="android:theme">?theme</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="titleTextAppearance">@style/TextAppearance.StockChamp.Toolbar</item>
+    </style>
 
+    <style name="TextAppearance.StockChamp.Toolbar" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16sp</item>
+    </style>
 
+    // Toolbar Menu
+    <style name="Widget.StockChamp.Backdrop" parent="">
+        <item name="android:background">?attr/colorAccent</item>
+    </style>
+
+    // Toolbar Menu BackDrop
+    <style name="Widget.StockChamp.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    // Stock Info Title
+    <style name="Widget.StockChamp.TextView.StockInfoTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:shadowColor">@color/PowderBlue</item>
+        <item name="android:shadowDx">12</item>
+        <item name="android:shadowDy">12</item>
+        <item name="android:shadowRadius">8</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    // Style the button colors
+    <style name="Widget.Shrine.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="backgroundTint">?attr/colorPrimaryDark</item>
+        <item name="android:stateListAnimator" tools:ignore="NewApi">@animator/stock_save_button_state_list_anim</item>
+    </style>
 
   </resources>

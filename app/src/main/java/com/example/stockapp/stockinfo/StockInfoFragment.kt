@@ -5,10 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
-import com.example.stockapp.R
-import com.example.stockapp.stock.StockViewModel
+import com.example.stockapp.databinding.FragmentStockInfoBinding
+import com.example.stockapp.domain.StockDataModel
 
 
 /**
@@ -22,10 +23,11 @@ class StockInfoFragment : Fragment() {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
         }
-        ViewModelProviders.of(this, StockInfoViewModel.Factory(activity.application))
+        val stockData = StockInfoFragmentArgs.fromBundle(arguments!!).selectedStock
+
+        ViewModelProviders.of(this, StockInfoViewModel.Factory(stockData, activity.application))
             .get(StockInfoViewModel::class.java)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +38,18 @@ class StockInfoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stock_info, container, false)
+
+        var binding = FragmentStockInfoBinding.inflate(inflater)
+        binding.setLifecycleOwner(this)
+        binding.viewModel = viewModel
+
+        viewModel.ss.observe(viewLifecycleOwner, Observer<StockDataModel> { stock ->
+            stock?.apply {
+                viewModel.setStockProperty(stock)
+            }
+        })
+
+        setHasOptionsMenu(false)
+        return binding.root
     }
 }

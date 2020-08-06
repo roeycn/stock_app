@@ -11,7 +11,6 @@ import com.example.stockapp.repository.StocksRepository
 import kotlinx.coroutines.*
 import retrofit2.await
 import java.lang.Exception
-import java.util.ArrayList
 
 enum class StockApiStatus { LOADING, ERROR, DONE }
 
@@ -76,7 +75,7 @@ class StockViewModel(application: Application) : ViewModel() {
     init {
         //getStockData()
         coroutineScope.launch {
-            stocksRepository.refreshStocks()
+            stocksRepository.refreshStockData("IBM")
         }
     }
 
@@ -108,7 +107,7 @@ class StockViewModel(application: Application) : ViewModel() {
 
     private fun getStockData() {
         coroutineScope.launch {
-             var responseDataDeferred = StockApi.retrofitService.getStockData()
+             var responseDataDeferred = StockApi.retrofitService.getStockTimeSeriesIntraday()
             try {
                 _status.value = StockApiStatus.LOADING
                 // this will run on a thread managed by Retrofit

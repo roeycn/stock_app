@@ -62,5 +62,9 @@
         android:id="@+id/stockInfoFragment"
         android:name="com.example.stockapp.stockinfo.StockInfoFragment"
         android:label="fragment_stock_info"
-        tools:layout="@layout/fragment_stock_info" />
+        tools:layout="@layout/fragment_stock_info" >
+        <argument
+            android:name="selectedStock"
+            app:argType="com.example.stockapp.search.SearchResultDao" />
+    </fragment>
 </navigation>

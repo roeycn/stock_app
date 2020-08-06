@@ -11,16 +11,16 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 
 
-class SearchAdapter(context: Context, @LayoutRes private val layoutResource: Int, private val allStocks: List<SearchFragment.SearchResultDao>):
-    ArrayAdapter<SearchFragment.SearchResultDao>(context, layoutResource, allStocks), Filterable {
+class SearchAdapter(context: Context, @LayoutRes private val layoutResource: Int, private val allStocks: List<SearchResultDao>):
+    ArrayAdapter<SearchResultDao>(context, layoutResource, allStocks), Filterable {
 
-    private var mStocks: List<SearchFragment.SearchResultDao> = allStocks
+    private var mStocks: List<SearchResultDao> = allStocks
 
     override fun getCount(): Int {
        return mStocks.size
     }
 
-    override fun getItem(index: Int): SearchFragment.SearchResultDao? {
+    override fun getItem(index: Int): SearchResultDao? {
         return mStocks.get(index)
     }
 
@@ -49,15 +49,12 @@ class SearchAdapter(context: Context, @LayoutRes private val layoutResource: Int
         val textViewSymbol: TextView = view.findViewById(android.R.id.text1)
         val textViewName: TextView = view.findViewById(android.R.id.text2)
 
-        val searchResultDao: SearchFragment.SearchResultDao? = getItem(position)
+        var searchResultDao: SearchResultDao? = getItem(position)
 
-        if (searchResultDao != null) {
+            if (searchResultDao != null) {
+                searchResultDao = editStockName(searchResultDao)
                 textViewSymbol.text = searchResultDao.stockSymbol
-                if (searchResultDao.stockName.length < 30) {
                 textViewName.text = searchResultDao.stockName
-                } else {
-                textViewName.text = searchResultDao.stockName.substring(0, 30)
-                }
         } else {
             textViewName.text = "Oops. There was a problem"
         }
@@ -75,7 +72,7 @@ class SearchAdapter(context: Context, @LayoutRes private val layoutResource: Int
                 val queryString = charSequence?.toString()?.toLowerCase()
 
                 if (filterResults != null) {
-                    mStocks = filterResults.values as List<SearchFragment.SearchResultDao>
+                    mStocks = filterResults.values as List<SearchResultDao>
 
                     // limit the results to 3 ... having scrolling results issue
                     if (mStocks.size > 3) {
@@ -113,6 +110,13 @@ class SearchAdapter(context: Context, @LayoutRes private val layoutResource: Int
                }
             }
         }
-
     }
+
+    fun editStockName(selectedStock: SearchResultDao?): SearchResultDao {
+        if (selectedStock?.stockName?.length!! > 30) {
+            selectedStock.stockName = selectedStock?.stockName?.substring(0, 30)
+        }
+        return selectedStock
+    }
+
 }

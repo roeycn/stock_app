@@ -1,14 +1,25 @@
 package com.example.stockapp.overview
 
+import android.content.Context
 import android.content.Intent
-import com.example.stockapp.R
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.view.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.stockapp.NavigationIconClickListener
+import com.example.stockapp.R
 import com.example.stockapp.SecondActivity
 import com.example.stockapp.database.Cars
 import com.example.stockapp.databinding.FragmentOverviewBinding
@@ -58,6 +69,12 @@ class OverviewFragment : Fragment() {
 
         //        val binding: FragmentOverviewBinding = DataBindingUtil.inflate(
 //            inflater, R.layout.fragment_overview, container, false)
+
+
+        if (!isOnline()) {
+            Toast.makeText(this.context,"please check your internet connection" , Toast.LENGTH_LONG).show()
+        }
+
 
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         binding.setLifecycleOwner(this)
@@ -122,9 +139,6 @@ class OverviewFragment : Fragment() {
         }
 
 
-
-
-
         binding.stocks.setOnClickListener() {
             viewModel.navigateStockFragment()
         }
@@ -160,6 +174,11 @@ class OverviewFragment : Fragment() {
 
 
 
+        // Set up the toolbar.
+        (activity as AppCompatActivity).setSupportActionBar(binding.appBar)
+        binding.appBar.setNavigationOnClickListener(NavigationIconClickListener(activity!!, binding.grid, AccelerateDecelerateInterpolator(),
+            ContextCompat.getDrawable(context!!, R.drawable.ic_menu_black), // Menu open icon
+            ContextCompat.getDrawable(context!!, R.drawable.ic_close_black))) // Menu close icon
 
 
         setHasOptionsMenu(true)
@@ -177,5 +196,11 @@ class OverviewFragment : Fragment() {
 //        super.onCreateOptionsMenu(menu, inflater)
 //    }
 
+    fun isOnline(): Boolean {
+       // val cm = getSystemService<Any>(context, Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        val cm = context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        val netInfo = cm!!.activeNetworkInfo
+        return netInfo != null && netInfo.isConnectedOrConnecting
+    }
 
 }

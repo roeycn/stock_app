@@ -28,7 +28,8 @@
             android:layout_below="@+id/title"
             android:layout_marginTop="10dp"
             android:completionThreshold="1"
-            android:dropDownHeight="300dp"/>
+            android:drawableRight="@android:drawable/ic_menu_close_clear_cancel"
+            android:dropDownHeight="300dp" />
 
         <TextView
             android:id="@+id/display"

@@ -13,11 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.stockapp.R
 import com.example.stockapp.databinding.FragmentSearchBinding
 import com.example.stockapp.domain.StockDataModel
-import com.example.stockapp.overview.OverviewFragmentDirections
-import com.example.stockapp.stockinfo.StockInfoFragment
-import kotlinx.android.synthetic.main.activity_second.view.*
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.fragment_stock.view.*
 import java.util.*
 
 
@@ -28,11 +23,7 @@ import java.util.*
  */
 class SearchFragment : Fragment() {
 
-
-    public var stocksNameList: MutableList<String> = ArrayList()
-    public lateinit var stockHashMap : HashMap<String,String>
-
-    private val alphavantageFreeApiKey = "CITUC4CO27CTCF4D"
+    lateinit var stockHashMap : HashMap<String,String>
 
     private val viewModel: SearchViewModel by lazy {
         val activity = requireNotNull(this.activity) {
@@ -58,21 +49,27 @@ class SearchFragment : Fragment() {
         binding.autoComplete.setDropDownBackgroundResource(R.color.AntiqueWhite)
        // binding.autoComplete.setDropDownVerticalOffset(1);
 
+        binding.autoComplete.onRightDrawableClicked {
+            it.text.clear()
+        }
 
         val results = getSearchResultsFromStockList()
         val adapter = SearchAdapter(context!!, android.R.layout.simple_expandable_list_item_2, results)
         binding.autoComplete.setAdapter(adapter)
 
         binding.autoComplete.setOnItemClickListener() { parent, _, position, id ->
-            val selectedStock = parent.adapter.getItem(position) as SearchResultDao?
-            val stockName: String
-            if (selectedStock?.stockName?.length!! < 30) {
-                stockName = selectedStock?.stockName
-            } else {
-                stockName = selectedStock?.stockName?.substring(0, 30)
-            }
-            binding.autoComplete.setText(stockName)
+            var selectedStock = parent.adapter.getItem(position) as SearchResultDao?
+            selectedStock = adapter.editStockName(selectedStock)
+            viewModel.navigateToStockInfo(selectedStock)
+            binding.autoComplete.text.clear()
         }
+
+        viewModel.navigateToStockInfoFragment.observe(this, androidx.lifecycle.Observer {
+            if (it != null) {
+                this.findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToStockInfoFragment(it))
+                viewModel.navigateToStockInfoComplete()
+            }
+        })
 
         // move search to ToolBar
         setHasOptionsMenu(false)
@@ -118,9 +115,7 @@ class SearchFragment : Fragment() {
 
             autoCompleteTextView.setOnItemClickListener() { parent, _, position, id ->
                 val selectedStock = parent.adapter.getItem(position) as SearchResultDao?
-               // autoCompleteTextView.setText(selectedStock?.stockName)
-             //   this.findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToStockInfoFragment())
-                Toast.makeText(this.context,"bbbbbb.",Toast.LENGTH_SHORT).show()
+                autoCompleteTextView.setText(selectedStock?.stockName)
             }
 
 
@@ -205,11 +200,6 @@ class SearchFragment : Fragment() {
          */
         fun onClick(stock: StockDataModel) = block(stock)
     }
-
-    data class SearchResultDao(
-        val stockSymbol: String,
-        val stockName: String
-    )
 
     private fun combineStockSymboleAndName(): List<SearchResultDao> {
 
