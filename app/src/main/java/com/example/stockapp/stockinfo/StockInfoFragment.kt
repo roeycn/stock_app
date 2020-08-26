@@ -1,12 +1,17 @@
 package com.example.stockapp.stockinfo
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import com.example.stockapp.R
 
 import com.example.stockapp.databinding.FragmentStockInfoBinding
 import com.example.stockapp.domain.StockDataModel
@@ -29,6 +34,8 @@ class StockInfoFragment : Fragment() {
             .get(StockInfoViewModel::class.java)
     }
 
+    private lateinit var binding: FragmentStockInfoBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,9 +46,10 @@ class StockInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        var binding = FragmentStockInfoBinding.inflate(inflater)
+        binding = FragmentStockInfoBinding.inflate(inflater)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
+
 
         viewModel.ss.observe(viewLifecycleOwner, Observer<StockDataModel> { stock ->
             stock?.apply {
@@ -49,7 +57,59 @@ class StockInfoFragment : Fragment() {
             }
         })
 
+        binding.addButton.setOnClickListener {
+            viewModel.addToStockListClicked()
+        }
+
+        viewModel.addToStockList.observe(viewLifecycleOwner, Observer<Boolean> {
+            it.let {
+                viewModel.addSelectedStockToStockList()
+        //        viewModel.addToStockListCompleted()
+            }
+
+        })
+
+
         setHasOptionsMenu(false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+      //  addAnimationOperations()
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+
+
+
+
+    // animations using ConstraintLayout  (via second layout)
+    // https://proandroiddev.com/creating-awesome-animations-using-constraintlayout-and-constraintset-part-i-390cc72c5f75
+    fun addAnimationOperations() {
+        var set = false
+        val constraint1 = ConstraintSet()
+        constraint1.clone(binding.root)
+        val constraint2 = ConstraintSet()
+        constraint2.clone(context, R.layout.fragment_stock_info_second)
+        // first way - option to do it without second layout
+        // https://robinhood.engineering/beautiful-animations-using-android-constraintlayout-eee5b72ecae3
+        //constraint2.clone(binding.root)
+        //constraint2.centerVertically(binding.imageView.id, 0)
+
+        binding.imageView.setOnClickListener{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                val transition = AutoTransition()
+                transition.duration = 5000
+                TransitionManager.beginDelayedTransition(binding.root, transition)
+
+              // CHECK - second way - without creating second layout for animation
+              // https://medium.com/@ashwinbhskr/a-better-way-to-change-view-dimensions-programatically-36e56b61a9b9
+              // binding.viewModel!!.dimensionsHelper.notifyChange(200, 200)
+
+                val constraint = if(set) constraint1 else constraint2
+                constraint.applyTo(binding.root)
+                set = !set
+            }
+        }
     }
 }

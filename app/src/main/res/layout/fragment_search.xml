@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/title"
@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:text="Enter Your Stock Below"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <AutoCompleteTextView
             android:id="@+id/autoComplete"
@@ -39,7 +39,40 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="selected stock will appear here"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/recentTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/display"
+            android:layout_marginTop="150dp"
+            android:text="recent search: "
+            android:textSize="24sp"
+            android:textStyle="bold|italic" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/recentTitle"
+            android:layout_marginTop="20dp"
+            android:background="@color/cardview_light_background">
+
+            <ProgressBar
+                android:id="@+id/loading_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:goneIfNotNull="@{viewModel.stocklist}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recent_search_viewModel_Adapter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/stock_item" />
+
+        </FrameLayout>
+
 
     </RelativeLayout>
 

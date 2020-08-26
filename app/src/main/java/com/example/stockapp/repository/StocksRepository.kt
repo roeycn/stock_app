@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.stockapp.database.DatabaseStock
 import com.example.stockapp.database.StocksDatabase
+import com.example.stockapp.database.UserStocksEntity
 import com.example.stockapp.database.asDomainModel
 import com.example.stockapp.domain.StockDataModel
+import com.example.stockapp.domain.UserStocksDataModel
+import com.example.stockapp.domain.asDatabaseModel
 import com.example.stockapp.network.StockApi
 import com.example.stockapp.network.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +40,12 @@ class StocksRepository(private val database: StocksDatabase) {
     fun getStockData(symbol: String): StockDataModel {
         val stock: StockDataModel = database.stockDao.getStockData(symbol) as StockDataModel
         return stock
+    }
+
+    suspend fun insertStockToUserStocks(model: UserStocksDataModel) {
+        withContext(Dispatchers.IO) {
+            database.stockDao.insertStockToUserStocks(model.asDatabaseModel())
+        }
     }
 
     // function to refresh the offline cache

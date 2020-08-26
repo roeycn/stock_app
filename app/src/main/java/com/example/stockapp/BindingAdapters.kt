@@ -36,3 +36,11 @@ fun bindStatus(statusImageView: ImageView, status: MarsApiStatus?) {
 fun goneIfNotNull(view: View, it: Any?) {
     view.visibility = if (it != null) View.GONE else View.VISIBLE
 }
+
+@BindingAdapter("app:changeDimensionObserver")
+fun changeViewDimensions(view: View, helper: ViewDimensionChangeHelper) {
+    helper.setOnDimensionChangedListener({ width: Int, height: Int ->
+        view.layoutParams.height = height
+        view.layoutParams.width = width
+    })
+}

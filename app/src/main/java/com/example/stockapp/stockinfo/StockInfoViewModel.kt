@@ -1,12 +1,17 @@
 package com.example.stockapp.stockinfo
 
 import android.app.Application
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.stockapp.R
+import com.example.stockapp.ViewDimensionChangeHelper
+import com.example.stockapp.database.Cars
 import com.example.stockapp.database.getDatabase
 import com.example.stockapp.domain.StockDataModel
+import com.example.stockapp.domain.UserStocksDataModel
 import com.example.stockapp.repository.StocksRepository
 import com.example.stockapp.search.SearchResultDao
 import kotlinx.coroutines.CoroutineScope
@@ -16,6 +21,8 @@ import kotlinx.coroutines.launch
 
 class StockInfoViewModel(stockData: SearchResultDao, application: Application) : ViewModel() {
 
+    val dimensionsHelper = ViewDimensionChangeHelper()
+
     private val _selectedStock = MutableLiveData<SearchResultDao>()
     val selectedStock: LiveData<SearchResultDao>
         get() = _selectedStock
@@ -23,6 +30,10 @@ class StockInfoViewModel(stockData: SearchResultDao, application: Application) :
     private var _stockInfo = MutableLiveData<StockDataModel>()
     val stockInfo: LiveData<StockDataModel>
       get() = _stockInfo
+
+    private val _addToStockList = MutableLiveData<Boolean>()
+    val addToStockList: LiveData<Boolean>
+        get() = _addToStockList
 
 
     private var viewModelJob = SupervisorJob()
@@ -38,13 +49,25 @@ class StockInfoViewModel(stockData: SearchResultDao, application: Application) :
         }
     }
 
-   // val stock = stocksRepository.getStockData(stockData.stockSymbol)
-   // val stocklist = stocksRepository.stocks
-
-        val ss = stocksRepository.getStockLiveData(stockData.stockSymbol)
+    val ss = stocksRepository.getStockLiveData(stockData.stockSymbol)
 
     fun setStockProperty(stock: StockDataModel) {
         _stockInfo.value = stock
+    }
+
+    fun addToStockListClicked() {
+        _addToStockList.value = true
+    }
+
+    fun addToStockListCompleted() {
+        _addToStockList.value = null
+    }
+
+    fun addSelectedStockToStockList() {
+        val userStock = UserStocksDataModel(_selectedStock.value!!.stockSymbol, _selectedStock.value!!.stockName)
+        coroutineScope.launch {
+            stocksRepository.insertStockToUserStocks(userStock)
+        }
     }
 
     /**

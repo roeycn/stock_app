@@ -137,7 +137,7 @@
         </TableLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/add_button"
+            android:id="@+id/next_button"
             style="@style/Widget.Shrine.Button"
             android:layout_width="136dp"
             android:layout_height="77dp"
@@ -146,21 +146,20 @@
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="24dp"
             android:text="@string/stock_info_button_save"
-            android:background="?attr/selectableItemBackground"
+            android:background="@drawable/add_stock_button"
             app:backgroundTint="#91D393"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_marginTop="138dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tableLayout"
-            app:srcCompat="@android:drawable/btn_star_big_on"
-            app:changeDimensionObserver="@{viewModel.dimensionsHelper}"/>
+            app:srcCompat="@android:drawable/btn_star_big_on" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

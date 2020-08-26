@@ -22,6 +22,10 @@ interface StockDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllStocks(vararg stock: DatabaseStock)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertStockToUserStocks(stock: UserStocksEntity)
+
 }
 
 // Room database class
@@ -29,7 +33,7 @@ interface StockDao {
 // Room uses the DAO to issue queries to its database.
 // By default, to avoid poor UI performance, Room doesn't allow you to issue queries on the main thread.
 // When Room queries return LiveData, the queries are automatically run asynchronously on a background thread.
-@Database(entities = [DatabaseStock::class], version = 1)
+@Database(entities = [DatabaseStock::class, UserStocksEntity::class], version = 1)
 abstract class StocksDatabase : RoomDatabase() {
     abstract val stockDao: StockDao
 }

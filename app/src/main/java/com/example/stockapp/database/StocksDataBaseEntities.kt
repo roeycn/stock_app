@@ -3,7 +3,7 @@ package com.example.stockapp.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.stockapp.domain.StockDataModel
-import com.example.stockapp.network.StockLastPriceContainer
+import com.example.stockapp.domain.UserStocksDataModel
 
 @Entity
 data class DatabaseStock constructor(
@@ -37,3 +37,4 @@ fun DatabaseStock.asDomainModel(): StockDataModel {
             change = it.change)
     }
 }
+

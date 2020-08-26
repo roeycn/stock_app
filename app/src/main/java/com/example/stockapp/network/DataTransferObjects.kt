@@ -63,6 +63,7 @@ fun StockLastPriceContainer.asDatabaseModel():DatabaseStock{
             price = it.price,
             volume = it.volume,
             latestTradingDay = it.latestTradingDay,
-            change = it.change)
+            change = it.change
+            )
     }
 }

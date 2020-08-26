@@ -9,6 +9,7 @@
     // stock item
     <string name="stock_symbol">Stock Symbol: %s</string>
     <string name="stock_price">Price: %s</string>
+    <string name="stock_name">Name: %s</string>
 
     <string-array name="Languages">
         <item>Java</item>

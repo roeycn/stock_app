@@ -13,7 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.stockapp.R
 import com.example.stockapp.databinding.FragmentSearchBinding
 import com.example.stockapp.domain.StockDataModel
+import com.example.stockapp.stock.StockAdapter
 import java.util.*
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.stockapp.stock.StockFragment
 
 
 /**
@@ -24,6 +29,8 @@ import java.util.*
 class SearchFragment : Fragment() {
 
     lateinit var stockHashMap : HashMap<String,String>
+
+    private var recentSearchViewModelAdapter: StockAdapter? = null
 
     private val viewModel: SearchViewModel by lazy {
         val activity = requireNotNull(this.activity) {
@@ -71,6 +78,19 @@ class SearchFragment : Fragment() {
             }
         })
 
+        viewModel.stocklist.observe(viewLifecycleOwner, Observer<List<StockDataModel>> { stocks ->
+            stocks?.apply {
+                recentSearchViewModelAdapter?.stocks = stocks
+            }
+        })
+
+        recentSearchViewModelAdapter = StockAdapter(StockFragment.StockClick {
+        })
+
+        binding.recentSearchViewModelAdapter.layoutManager = LinearLayoutManager(context)
+        binding.recentSearchViewModelAdapter.adapter = recentSearchViewModelAdapter
+
+
         // move search to ToolBar
         setHasOptionsMenu(false)
         return binding.root
@@ -80,7 +100,6 @@ class SearchFragment : Fragment() {
      val combinedData = combineStockSymboleAndName()
      return combinedData
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
