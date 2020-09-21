@@ -9,14 +9,16 @@ import com.example.stockapp.domain.UserStocksDataModel
 data class UserStocksEntity constructor(
     @PrimaryKey
     val symbol: String,
-    val name: String)
+    val name: String,
+    var value: Int)
 
 // an extension function which converts from database objects to domain objects:
 fun List<UserStocksEntity>.asDomainModel(): List<UserStocksDataModel> {
     return map {
         UserStocksDataModel (
             symbol = it.symbol,
-            name = it.name)
+            name = it.name,
+            value = it.value)
     }
 }
 
@@ -25,6 +27,7 @@ fun UserStocksEntity.asDomainModel(): UserStocksDataModel {
     return let  {
         UserStocksDataModel (
             symbol = it.symbol,
-            name = it.name)
+            name = it.name,
+            value = it.value)
     }
 }

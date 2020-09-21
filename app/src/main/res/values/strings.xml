@@ -39,4 +39,14 @@
     <string name="stock_info_volume">Volume:</string>
 
     <string name="stock_info_button_save">Add To Your Stock List</string>
+
+
+    <string name="send_your_portfolio_dailog_title">Are you sure you want to start your portfolio?</string>
+    <string name="send_your_portfolio_dailog_subtitle">will start from next trading day</string>
+    <string name="your_portfolio_saved_on">your portfolio saved at: %1$s, %2$s</string>
+    <string name="stock_cost">"%1$s $"</string>
+    <string name="total_value">"total value: %1$s $"</string>
+    <string name="stock_list_full_title">"your 3 selected stocks:"</string>
+    <string name="stock_list_title">"complete your stocks selection: %1$d out of 3"</string>
+
 </resources>

@@ -83,4 +83,18 @@
         <item name="android:stateListAnimator" tools:ignore="NewApi">@animator/stock_save_button_state_list_anim</item>
     </style>
 
+
+    <style name="Widget.AddStockButton.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:backgroundTint">@drawable/add_stock_button</item>
+        <item name="android:stateListAnimator" tools:ignore="NewApi">@animator/stock_save_button_state_list_anim</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlayExtended" parent="Widget.MaterialComponents.Button">
+        <item name="cornerFamilyBottomLeft">rounded</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+        <item name="cornerSizeBottomLeft">30%</item>
+        <item name="cornerSizeBottomRight">30%</item>
+    </style>
+
   </resources>

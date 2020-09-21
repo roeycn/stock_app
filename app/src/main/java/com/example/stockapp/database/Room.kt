@@ -26,6 +26,12 @@ interface StockDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStockToUserStocks(stock: UserStocksEntity)
 
+    @Delete()
+    fun removeStockFromUserStocks(stock: UserStocksEntity)
+
+    @Query("select * from userStocksEntity")
+    fun getUserStocks(): LiveData<List<UserStocksEntity>>
+
 }
 
 // Room database class

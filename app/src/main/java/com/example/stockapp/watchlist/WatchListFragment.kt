@@ -1,33 +1,22 @@
 package com.example.stockapp.watchlist
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
-import com.example.stockapp.databinding.FragmentSearchBinding
-import com.example.stockapp.domain.StockDataModel
-import kotlinx.android.synthetic.main.fragment_search.*
-import android.util.Log
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.dragdroprecyclerview.ItemMoveCallbackListener
 import com.example.stockapp.R
 import com.example.stockapp.databinding.FragmentWatchListBinding
-import com.example.stockapp.network.StockApiService
-import com.example.stockapp.network.StockApiServiceBuilder
-import com.example.stockapp.network.StockSearchProperty
-import com.example.stockapp.search.CountryAdapter
-import kotlinx.android.synthetic.main.fragment_watch_list.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.util.ArrayList
+import com.example.stockapp.domain.UserStocksDataModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.lang.String
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -35,12 +24,11 @@ import java.util.ArrayList
  * Use the [SearchFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class WatchListFragment : Fragment() {
+class WatchListFragment : Fragment(), OnStartDragListener {
 
-
-    public var stocksNameList: MutableList<String> = ArrayList()
-
-    private val alphavantageFreeApiKey = "CITUC4CO27CTCF4D"
+    lateinit var adapter: WatchListAdapter
+    lateinit var touchHelper: ItemTouchHelper
+    var actionMode: ActionMode? = null
 
     private val viewModel: WatchListViewModel by lazy {
         val activity = requireNotNull(this.activity) {
@@ -57,193 +45,110 @@ class WatchListFragment : Fragment() {
         var binding = FragmentWatchListBinding.inflate(inflater)
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
-
-        viewModel.loadData()
-
-        binding.countryList.layoutManager = GridLayoutManager(activity, 2)
-        binding.countryList.adapter = CountryAdapter(viewModel.displayList, this.requireContext())
-
-        // AutoCompleteTextView
-        //      val autotextView = view?.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
+        adapter = WatchListAdapter(this, viewModel)
 
 
+        // in case i delete an item - then this called again and causing crash on bindviewholder -it getting an array out of index
+        viewModel.userStocks.observe(viewLifecycleOwner, Observer<List<UserStocksDataModel>> { userStocks ->
+            userStocks?.apply {
+                // adapter.setUserStocks(userStocks)
+                // need to check how to handle without it
+                adapter.submitList(userStocks)
 
-        //   val languages = resources.getStringArray(R.array.Languages)
+                binding.fabAddStock.isEnabled = userStocks.size < 3
 
+                if (!binding.fabAddStock.isEnabled) {
+                    binding.fabAddStock.visibility = View.INVISIBLE
+                    binding.stockListTitle.text = String.format(
+                        context!!.getString(R.string.stock_list_full_title))
+                } else {
+                    binding.fabAddStock.visibility = View.VISIBLE
+                    binding.stockListTitle.text = String.format(
+                        context!!.getString(R.string.stock_list_title), userStocks.size)
+                }
 
-//        val adapter = ArrayAdapter<String>(this.activity,
-////            android.R.layout.simple_dropdown_item_1line, stocksNameList)
-////        binding.autoCompleteTextView.setAdapter(adapter)
-
-
-        //adapter.notifyDataSetChanged()
-
-
-        viewModel.searchResponse.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Log.i("ccccc","ccccc observe - searchResponse changed")
-//                stocksNameList.clear()
-//                adapter.clear()
-//                stocksNameList = viewModel.getStocksNameList()
-//                adapter.addAll(stocksNameList)
-//                adapter.notifyDataSetChanged()
+                binding.totalValue.text = String.format(
+                    context!!.getString(R.string.total_value), viewModel.calculateTotalValue(userStocks).toString())
             }
         })
 
-        // Auto complete threshold
-        // The minimum number of characters to type to show the drop down
-        binding.autoCompleteTextView.threshold = 1
-        //   binding.autoCompleteTextView.requestFocus()
-        binding.autoCompleteTextView.clearFocus()
-        binding.autoCompleteTextView.hint = "Search here..."
+       // val userStocks = viewModel.userStocks.value
+       // adapter.setUserStocks(userStocks!!)
+       // adapter.submitList(userStocks)
+//        binding.totalValue.text = String.format(
+//            context!!.getString(R.string.total_value), viewModel.calculateTotalValue(userStocks).toString())
 
-        binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
-            @Override
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-            }
+   //     adapter.setUserStocks(viewModel.userStocks.value!!)
 
-            @Override
-            override fun onTextChanged(
-                s: CharSequence, start: Int, before: Int,
-                count: Int
-            ) {
-                getSearchResults(binding.autoCompleteTextView.text.toString(), alphavantageFreeApiKey, binding)
+        val callback: ItemTouchHelper.Callback = ItemMoveCallbackListener(context!!, adapter)
+        touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(binding.userStocksList)
+        binding.userStocksList.adapter = adapter
 
-                Log.i("bbbbb","bbbbb  text entered: " + (binding.autoCompleteTextView.text.toString()))
-                Log.i("bbbbb", "bbbbb   stocks size is" + (viewModel.searchResponse.value?.metaData?.size))
-                Log.i("bbbbb", "bbbbb   stocks name list: " + (viewModel.getStocksNameList()))
+        val manager = GridLayoutManager(activity, 1)
+        binding.userStocksList.layoutManager = manager
 
-//                adapter.addAll(stocksNameList)
-//                adapter.notifyDataSetChanged()
-            }
-
-            override fun afterTextChanged(s: Editable) {}
-        })
-
-
-        // Set an item click listener for auto complete text view
-        binding.autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener{
-                parent,view,position,id->
-            val selectedItem = parent.getItemAtPosition(position).toString()
-            // Display the clicked item using toast
-            Toast.makeText(this.context,"Selected : $selectedItem",Toast.LENGTH_SHORT).show()
-        }
-
-        // Set a dismiss listener for auto complete text view
-        binding.autoCompleteTextView.setOnDismissListener {
-            Toast.makeText(this.context,"setOnDismissListener-Suggestion closed.",Toast.LENGTH_SHORT).show()
-        }
-
-        // Set a focus change listener for auto complete text view
-        binding.autoCompleteTextView.onFocusChangeListener = View.OnFocusChangeListener{
-                view, b ->
-            //            if(b){
-//                // Display the suggestion dropdown on focus
-//                binding.autoCompleteTextView.showDropDown()
+        // possible to declare what to do in swipe right or left with:
+//        binding.userStocksList.setOnTouchListener(object : OnSwipeTouchListener(){
+//            override fun onSwipeLeft() {
+//                Log.e("ViewSwipe", "Left")
+//                super.onSwipeLeft()
 //            }
-//            Toast.makeText(this.context,"onFocusChangeListener",Toast.LENGTH_SHORT).show()
+//        });
+
+        binding.confirmSelection.setOnClickListener() {
+            viewModel.sendYourPortfolioClicked()
         }
 
+        viewModel.mSendYourPortfolio.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.send_your_portfolio_dailog_title)
+                    .setMessage(R.string.send_your_portfolio_dailog_subtitle)
+                    .setPositiveButton("YES") { dialog, which ->
+                        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+                        val currentTime = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
+
+                        //the stock starting price - 1000$ is set when user add it to his list
+                       // adapter.setUserStocks(viewModel.setStartingStocksPrice(adapter.mUserStocks))
+
+                        binding.info.text = String.format(
+                            context!!.getString(R.string.your_portfolio_saved_on), currentDate, currentTime)
+                        binding.info.visibility = View.VISIBLE
+                    }
+                    .setNegativeButton("No") {dialog, which ->
+                    }
+                    .show()
+            }
+        })
+
+
+
+
+        binding.fabAddStock.setOnClickListener() {
+            viewModel.navigateSearchFragment()
+        }
+
+        viewModel.navigateToSearch.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(WatchListFragmentDirections.actionWatchListFragmentToSearchFragment())
+                viewModel.navigateSearchFragmentComplete()
+            }
+        })
 
         setHasOptionsMenu(true)
         return binding.root
     }
 
-    fun getSearchResults(
-        keywords: String,
-        apikey: String,
-        binding: FragmentWatchListBinding
-    ) {
-        val request = StockApiServiceBuilder.buildService(StockApiService::class.java)
-        val call = request.getSearchResults(keywords, apikey)
 
-        call.enqueue(object : Callback<StockSearchProperty> {
-
-            override fun onResponse(
-                call: Call<StockSearchProperty>,
-                response: Response<StockSearchProperty>
-            ) {
-                if (response.isSuccessful) {
-                    stocksNameList.clear()
-                    val str = response.body()?.metaData
-                    for (s in str.orEmpty()) {
-                        Log.i("metadata",s.name)
-                        println("aaaaaaaa printing the metaddata: " +s.name)
-                        stocksNameList.add(s.name)
-                    }
-
-                    val adapter = ArrayAdapter<String>(context,
-                        android.R.layout.simple_dropdown_item_1line, stocksNameList)
-                    binding.autoCompleteTextView.setAdapter(adapter)
-                    adapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun onFailure(call: Call<StockSearchProperty>, t: Throwable) {
-                Toast.makeText(context,"onFocusChangeListener",Toast.LENGTH_SHORT).show()
-            }
-        })
+    companion object {
+        var isMultiSelectOn = false
+        val TAG = "MainActivity"
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-
-        inflater.inflate(R.menu.search_menu, menu)
-
-        val searchItem = menu.findItem(R.id.menu_search)
-        if(searchItem != null){
-            val searchView = searchItem.actionView as SearchView
-            val editext = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-            editext.hint = "Search here..."
-
-            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    viewModel.displayList.clear()
-                    if(newText!!.isNotEmpty()){
-                        val search = newText.toLowerCase()
-                        viewModel.countries.forEach {
-                            if(it.toLowerCase().startsWith(search)){
-                                viewModel.displayList.add(it)
-                            }
-                        }
-                    }else{
-                        viewModel.displayList.addAll(viewModel.countries)
-                    }
-                    country_list.adapter?.notifyDataSetChanged()
-                    return true
-                }
-
-            })
-        }
-        return super.onCreateOptionsMenu(menu, inflater)
-
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder?) {
+        touchHelper.startDrag(viewHolder!!)
     }
-
-
-    /**
-     * Click listener for Videos. By giving the block a name it helps a reader understand what it does.
-     *
-     */
-    class StockClick(val block: (StockDataModel) -> Unit) {
-        /**
-         * Called when a stock is clicked
-         *
-         * @param stock the stock that was clicked
-         */
-        fun onClick(stock: StockDataModel) = block(stock)
-    }
-
-
-
 }
 
 

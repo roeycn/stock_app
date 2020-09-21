@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -50,15 +51,16 @@ class StockInfoFragment : Fragment() {
         binding.setLifecycleOwner(this)
         binding.viewModel = viewModel
 
-
         viewModel.ss.observe(viewLifecycleOwner, Observer<StockDataModel> { stock ->
             stock?.apply {
                 viewModel.setStockProperty(stock)
             }
         })
 
-        binding.addButton.setOnClickListener {
+        binding.addStockButton.setOnClickListener {
             viewModel.addToStockListClicked()
+            binding.addStockButton.isEnabled = false
+            Toast.makeText(this.context,"The stock is in your list" , Toast.LENGTH_LONG).show()
         }
 
         viewModel.addToStockList.observe(viewLifecycleOwner, Observer<Boolean> {

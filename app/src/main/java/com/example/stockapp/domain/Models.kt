@@ -25,14 +25,16 @@ data class StockDataModel(
 
 data class UserStocksDataModel(
     val symbol: String,
-    val name: String) {
+    val name: String,
+    var value: Int) {
 }
 
 // an extension function that converts from data transfer objects to database objects:
 fun  UserStocksDataModel.asDatabaseModel(): UserStocksEntity {
         return UserStocksEntity(
             symbol = symbol,
-            name = name
+            name = name,
+            value = value
         )
 
 }

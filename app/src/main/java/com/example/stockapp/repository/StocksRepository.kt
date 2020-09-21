@@ -10,15 +10,20 @@ import com.example.stockapp.database.asDomainModel
 import com.example.stockapp.domain.StockDataModel
 import com.example.stockapp.domain.UserStocksDataModel
 import com.example.stockapp.domain.asDatabaseModel
+import com.example.stockapp.mars.MarsApiStatus
+import com.example.stockapp.network.MarsApi
 import com.example.stockapp.network.StockApi
+import com.example.stockapp.network.StockLastPriceContainer
 import com.example.stockapp.network.asDatabaseModel
+import com.example.stockapp.stockinfo.StockInfoApiStatus
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 // A Repository manages queries and allows you to use multiple backends.
 // In the most common example, the Repository implements the logic for deciding whether to fetch data
 // from a network or use results cached in a local database.
-class StocksRepository(private val database: StocksDatabase) {
+class StocksRepository (private val database: StocksDatabase) {
 
     private val alphavantageFreeApiKey = "CITUC4CO27CTCF4D"
 
@@ -56,4 +61,15 @@ class StocksRepository(private val database: StocksDatabase) {
             database.stockDao.insertStock(stocklastprice.asDatabaseModel())
         }
     }
+
+    val userStocks: LiveData<List<UserStocksDataModel>> = Transformations.map(database.stockDao.getUserStocks()) {
+        it.asDomainModel()
+    }
+
+    suspend fun removeStockFromUserStocks(model: UserStocksDataModel) {
+        withContext(Dispatchers.IO) {
+            database.stockDao.removeStockFromUserStocks(model.asDatabaseModel())
+        }
+    }
+
 }

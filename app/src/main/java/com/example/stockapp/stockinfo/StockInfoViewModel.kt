@@ -12,12 +12,17 @@ import com.example.stockapp.database.Cars
 import com.example.stockapp.database.getDatabase
 import com.example.stockapp.domain.StockDataModel
 import com.example.stockapp.domain.UserStocksDataModel
+import com.example.stockapp.mars.MarsApiStatus
+import com.example.stockapp.network.StockApi
 import com.example.stockapp.repository.StocksRepository
 import com.example.stockapp.search.SearchResultDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
+
+enum class StockInfoApiStatus { LOADING, ERROR, DONE }
 
 class StockInfoViewModel(stockData: SearchResultDao, application: Application) : ViewModel() {
 
@@ -35,6 +40,12 @@ class StockInfoViewModel(stockData: SearchResultDao, application: Application) :
     val addToStockList: LiveData<Boolean>
         get() = _addToStockList
 
+    // The internal MutableLiveData that stores the status of the most recent request
+    private val _status = MutableLiveData<StockInfoApiStatus>()
+    // The external immutable LiveData for the request status
+    val status: LiveData<StockInfoApiStatus>
+        get() = _status
+
 
     private var viewModelJob = SupervisorJob()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -44,15 +55,20 @@ class StockInfoViewModel(stockData: SearchResultDao, application: Application) :
     init {
         _selectedStock.value = stockData
 
+        val alphavantageFreeApiKey = "CITUC4CO27CTCF4D"
+
+        _status.value = StockInfoApiStatus.LOADING
         coroutineScope.launch {
-            stocksRepository.refreshStockData(stockData.stockSymbol)
+            stocksRepository.refreshStockData(stockData.stockSymbol);
         }
+
     }
 
     val ss = stocksRepository.getStockLiveData(stockData.stockSymbol)
 
     fun setStockProperty(stock: StockDataModel) {
         _stockInfo.value = stock
+        _status.value = StockInfoApiStatus.DONE
     }
 
     fun addToStockListClicked() {
@@ -64,7 +80,7 @@ class StockInfoViewModel(stockData: SearchResultDao, application: Application) :
     }
 
     fun addSelectedStockToStockList() {
-        val userStock = UserStocksDataModel(_selectedStock.value!!.stockSymbol, _selectedStock.value!!.stockName)
+        val userStock = UserStocksDataModel(_selectedStock.value!!.stockSymbol, _selectedStock.value!!.stockName, 1000)
         coroutineScope.launch {
             stocksRepository.insertStockToUserStocks(userStock)
         }

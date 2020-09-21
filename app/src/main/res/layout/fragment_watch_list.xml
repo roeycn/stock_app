@@ -12,33 +12,78 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/country_list"
-            android:layout_width="405dp"
-            android:layout_height="116dp"
-            android:layout_marginStart="3dp"
-            android:layout_marginTop="55dp"
-            android:layout_marginEnd="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
+        <TextView
+            android:id="@+id/stock_list_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
+            android:text="your stocks:"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:context="com.example.stockapp.MainActivity" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteTextView"
-            android:layout_width="330dp"
-            android:layout_height="57dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="80dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_stocks_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="69dp"
+            android:layout_marginBottom="28dp"
+            app:layout_constraintBottom_toTopOf="@+id/total_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/confirm_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Send Your Portfolio"
+            app:layout_constraintBottom_toTopOf="@+id/info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="40dp"
+            android:text="saved info"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.476"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/country_list"
-            app:layout_constraintVertical_bias="0.706" />
+            app:layout_constraintStart_toStartOf="parent" />
 
+        <TextView
+            android:id="@+id/total_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="total_value.."
+            android:textSize="24sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/confirm_selection"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_stocks_list" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/Chartreuse"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/confirm_selection"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_stocks_list"
+            app:srcCompat="@drawable/ic_add_white_24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </layout>
