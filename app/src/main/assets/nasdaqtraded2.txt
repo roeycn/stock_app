@@ -1,0 +1,5 @@
+Y|A|Agilent Technologies, Inc. Common Stock|N| |N|100|N||A|A|N
+Y|AA|Alcoa Corporation Common Stock |N| |N|100|N||AA|AA|N
+Y|AAAU|Perth Mint Physical Gold ETF|P| |Y|100|N||AAAU|AAAU|N
+Y|AACG|ATA Creativity Global - American Depositary Shares, each representing two common shares|Q|G|N|100|N|D||AACG|N
+
