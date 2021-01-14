@@ -43,6 +43,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:$version_android_gradle_plugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$version_kotlin"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.1.0-rc01"
+        classpath 'com.google.gms:google-services:4.3.3'
     }
 }
 
@@ -50,6 +51,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

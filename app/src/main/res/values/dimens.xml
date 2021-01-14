@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="stock_product_grid_reveal_height">200dp</dimen>
+
+    <!--DBX Dialog-->
+    <dimen name="dialog_card_radius">3dp</dimen>
+    <dimen name="dialog_small_dialog">8dp</dimen>
+    <dimen name="dialog_img_top_margin">40dp</dimen>
+    <dimen name="dialog_title_margin_top">18dp</dimen>
+    <dimen name="dialog_text_side_margin">35dp</dimen>
+    <dimen name="dialog_text_max_width">350dp</dimen>
+    <dimen name="dialog_btn_height">72dp</dimen>
+    <dimen name="dialog_scroll_margin">110dp</dimen>
+    <dimen name="dialog_sep_top_margin">35dp</dimen>
+    <dimen name="dialog_button_txt_size">22sp</dimen>
+
 </resources>

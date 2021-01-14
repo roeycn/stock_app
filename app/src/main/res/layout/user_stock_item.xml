@@ -5,7 +5,7 @@
     <data>
         <variable
             name="stock"
-            type="com.example.stockapp.domain.UserStocksDataModel" />
+            type="com.roeyc.stockapp.domain.UserStocksDataModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

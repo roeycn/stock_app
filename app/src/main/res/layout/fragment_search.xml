@@ -5,7 +5,7 @@
 <data>
     <variable
         name="viewModel"
-        type="com.example.stockapp.search.SearchViewModel" />
+        type="com.roeyc.stockapp.search.SearchViewModel" />
 </data>
 
     <RelativeLayout
@@ -66,7 +66,7 @@
                 app:goneIfNotNull="@{viewModel.stocklist}" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recent_search_viewModel_Adapter"
+                android:id="@+id/recent_search_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:listitem="@layout/stock_item" />

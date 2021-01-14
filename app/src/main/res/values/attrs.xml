@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- DBXDialog-->
+    <attr format="reference" name="dialogTitleAppearance"/>
+    <attr format="reference" name="dialogMessageAppearance"/>
+    <attr format="reference" name="dialogPositiveButtonStyle"/>
+    <attr format="reference" name="dialogNegativeButtonStyle"/>
+
+</resources>

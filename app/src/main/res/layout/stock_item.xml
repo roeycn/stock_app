@@ -5,7 +5,7 @@
     <data>
         <variable
             name="stock"
-            type="com.example.stockapp.domain.StockDataModel" />
+            type="com.roeyc.stockapp.domain.StockDataModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -60,7 +60,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/backgrounds/scenic"
-                tools:text="stock symbol" />
+                tools:text="Name: " />
 
             <TextView
                 android:id="@+id/stock_name"
