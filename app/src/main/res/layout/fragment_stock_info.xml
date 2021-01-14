@@ -1,0 +1,179 @@
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    >
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.roeyc.stockapp.stockinfo.StockInfoViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/stock_info_title"
+            style="@style/Widget.StockChamp.TextView.StockInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="298dp"
+            android:text="@string/stock_info_title"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/status_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:stockInfoApiStatus="@{viewModel.status}" />
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stock_info_title"
+            app:tabPaddingEnd="10dp"
+            app:tabPaddingStart="10dp">
+
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/stock_info_symbol" />
+
+                <TextView
+                    android:id="@+id/stockSymbol"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.selectedStock.stockSymbol}"
+                    android:textAlignment="textStart"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/Black" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/stock_info_name" />
+
+                <TextView
+                    android:id="@+id/stockName"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.selectedStock.stockName}"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="true"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="#234568"
+                    android:textStyle="bold|italic" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/stock_info_price" />
+
+                <TextView
+                    android:id="@+id/stockPrice"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.stockInfo.price}"
+                    android:textAlignment="textStart"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/Black"
+                    app:startIconDrawable="@drawable/ic_attach_money_black_24dp" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/stock_info_change" />
+
+                <TextView
+                    android:id="@+id/stockChange"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.stockInfo.change}"
+                    android:textAlignment="textStart"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/Black" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/stock_info_latest_trading_day" />
+
+                <TextView
+                    android:id="@+id/stockLatestTradingDay"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.stockInfo.latestTradingDay}"
+                    android:textAlignment="textStart"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/DarkGoldenrod" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/stock_info_volume" />
+
+                <TextView
+                    android:id="@+id/stockVolume"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.stockInfo.volume}"
+                    android:textAlignment="textStart"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/Black" />
+            </TableRow>
+
+        </TableLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_stock_button"
+            android:layout_width="136dp"
+            android:layout_height="77dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@drawable/color_states_materialbutton"
+            android:text="@string/stock_info_button_save"
+            android:visibility="invisible"
+            app:icon="@android:drawable/star_big_on"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="138dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+            app:srcCompat="@android:drawable/btn_star_big_on"
+            app:changeDimensionObserver="@{viewModel.dimensionsHelper}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

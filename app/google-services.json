@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "988774819574",
+    "firebase_url": "https://stock-champ.firebaseio.com",
+    "project_id": "stock-champ",
+    "storage_bucket": "stock-champ.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988774819574:android:c90e955d3e25fab426aed7",
+        "android_client_info": {
+          "package_name": "com.roeyc.stockapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "988774819574-d05f0lnru2ctlrd9opk4auj7r830ggbg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.roeyc.stockapp",
+            "certificate_hash": "c51b2e14b5be85db51717a27067b8c4c4e1858f4"
+          }
+        },
+        {
+          "client_id": "988774819574-nasclth73b860qabtu5t5i6f2uri4eom.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNb6WkwsX7vaio80jpcIGhuYOQzPDKiBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "988774819574-nasclth73b860qabtu5t5i6f2uri4eom.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

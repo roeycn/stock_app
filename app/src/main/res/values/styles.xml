@@ -1,11 +1,176 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorPrimaryVariant">@color/primaryLightColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/secondaryColor</item>
+        <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
+        <item name="shapeAppearanceSmallComponent">@style/AppShapeAppearance.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/AppShapeAppearance.MediumComponent</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--  <item name="autoCompleteTextViewStyle">@style/Autocomplete</item>    -->
+      </style>
+
+
+      <style name="AppTextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
+          <item name="android:textAllCaps">false</item>
+      </style>
+
+      <style name="AppShapeAppearance.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+          <item name="cornerFamily">cut</item>
+          <item name="cornerSize">8dp</item>
+      </style>
+      <style name="AppShapeAppearance.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+          <item name="cornerFamily">cut</item>
+          <item name="cornerSize">8dp</item>
+      </style>
+
+
+
+    // Main Screen
+
+    // Main Screen Toolbar
+    <style name="Widget.StockChamp.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">#DBC9F4</item>
+    </style>
+
+    <style name="TextAppearance.StockChamp.Toolbar" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    // Toolbar Menu
+    <style name="Widget.StockChamp.Backdrop" parent="">
+        <item name="android:background">#E5DAF6</item>
+    </style>
+
+    // Toolbar Menu BackDrop
+    <style name="Widget.StockChamp.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+
+    // Stock Info Screen
+
+    // Stock Info Title
+    <style name="Widget.StockChamp.TextView.StockInfoTitle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:shadowColor">@color/PowderBlue</item>
+        <item name="android:shadowDx">12</item>
+        <item name="android:shadowDy">12</item>
+        <item name="android:shadowRadius">8</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    // Style the button colors
+    <style name="Widget.Shrine.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="backgroundTint">?attr/colorPrimaryDark</item>
+        <item name="android:stateListAnimator" tools:ignore="NewApi">@animator/stock_save_button_state_list_anim</item>
+    </style>
+
+
+    <style name="Widget.AddStockButton.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:backgroundTint">@drawable/add_stock_button</item>
+        <item name="android:stateListAnimator" tools:ignore="NewApi">@animator/stock_save_button_state_list_anim</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlayExtended" parent="Widget.MaterialComponents.Button">
+        <item name="cornerFamilyBottomLeft">rounded</item>
+        <item name="cornerFamilyBottomRight">rounded</item>
+        <item name="cornerSizeBottomLeft">30%</item>
+        <item name="cornerSizeBottomRight">30%</item>
+    </style>
+
+    // Login via firebaseUi
+    <style name="LoginTheme" parent="FirebaseUI">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlActivated">@android:color/white</item>
+        <item name="colorControlHighlight">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:windowBackground">@color/SkyBlue</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColorHint">@android:color/white</item>
     </style>
 
-</resources>
+    <!-- APP dialog styles-->
+
+    <style name="InfoDialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="dialogTitleAppearance">@style/InfoDialogTitleBaseStyle</item>
+        <item name="dialogMessageAppearance">@style/DialogInfoMessageBaseStyle</item>
+        <item name="dialogNegativeButtonStyle">@style/DialogInfoButtonBaseStyle</item>
+        <item name="dialogPositiveButtonStyle">@style/DialogInfoButtonBaseStyle.Positive</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
+    <style name="InfoDialogTitleBaseStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">40dp</item>
+        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginStart">40dp</item>
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:fontFamily">@string/sans_serif_regular</item>
+        <item name="android:gravity">center</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textColor">@color/Black</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DialogInfoMessageBaseStyle">
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">@string/sans_serif_regular</item>
+        <item name="android:textColor">@color/DarkGray</item>
+    </style>
+
+    <style name="DialogInfoButtonBaseStyle" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:textSize">@dimen/dialog_button_txt_size</item>
+        <item name="android:visibility">visible</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@drawable/selector_dbx_positive_btn</item>
+    </style>
+
+    <style name="DialogInfoButtonBaseStyle.Positive">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DialogInfoButtonBaseStyle.Positive.Red">
+        <item name="android:textColor">@color/Red</item>
+    </style>
+
+    <!-- DBX dialog components styles-->
+    <style name="DialogInfoTracker">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">6dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:background">@color/Aqua</item>
+    </style>
+
+
+  </resources>

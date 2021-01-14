@@ -1,0 +1,108 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="stock"
+            type="com.roeyc.stockapp.domain.UserStocksDataModel" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="5dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/left_well"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="50dp" />
+
+            <TextView
+                android:id="@+id/stock_cost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/stock_cost"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/stock_symbol"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="cost..." />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_well"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="70dp" />
+
+
+            <TextView
+                android:id="@+id/stock_symbol"
+                android:layout_width="0dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginBottom="16dp"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:scaleType="centerCrop"
+                android:textColor="@color/design_default_color_primary"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                tools:text="stock symbol" />
+
+            <TextView
+                android:id="@+id/stock_name"
+                android:layout_width="253dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginBottom="16dp"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/design_default_color_secondary_variant"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="@+id/stock_symbol"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/stock_symbol"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="stock name" />
+
+            <ImageView
+                android:id="@+id/drag_item"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/left_well"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_drag_item_foreground" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

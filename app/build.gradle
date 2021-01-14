@@ -18,37 +18,65 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'com.google.gms.google-services'
+
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file("../Config/debug.keystore")
+        }
+        release {
+            storeFile file("../Config/release-key.keystore")
+//            if (file("../local.properties").exists()) {
+//                Properties props = new Properties()
+//                props.load(new FileInputStream(file("../local.properties")))
+//                storePassword props['keystore.password.mobile']
+//                keyAlias props['keystore.alias.mobile']
+//                keyPassword props['keystore.password.mobile']
+//            }
+        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
     compileSdkVersion 28
     // Enables data binding.
     dataBinding {
         enabled = true
     }
     defaultConfig {
-        applicationId "com.example.qaapp"
-        minSdkVersion 19
+        applicationId "com.roeyc.stockapp"
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+
     androidExtensions {
         experimental = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version_kotlin"
+    implementation 'androidx.appcompat:appcompat'
 
     // Support libraries
     implementation "androidx.constraintlayout:constraintlayout:$version_constraint_layout"
@@ -68,26 +96,81 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
     implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
 
-    // Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_kotlin_coroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_kotlin_coroutines"
+    // adding gson convertor
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
 
-    // Navigation
-    implementation "android.arch.navigation:navigation-fragment-ktx:$version_navigation"
-    implementation "android.arch.navigation:navigation-ui-ktx:$version_navigation"
-
-    // Testing
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.3.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     // Retrofit Coroutines Support
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
     // logging
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_kotlin_coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_kotlin_coroutines"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha04"
+
+    // Testing
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     // Room database
     implementation "androidx.room:room-runtime:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
+
+    // Material-components-android
+    implementation "com.google.android.material:material:1.2.0-alpha02"
+
+    implementation "com.android.support:design:28.0.0"
+
+    // https://levelup.gitconnected.com/expandable-text-view-using-kotlin-and-android-studio-2b70ff04c0e9
+    implementation 'com.ms-square:expandableTextView:0.1.4'
+
+    // add the Firebase SDK for Google Analytics / another soultion is to use https://firebase.google.com/docs/android/setup#firebase-bom
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
+    implementation 'com.google.firebase:firebase-storage-ktx:19.2.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.7.0'
+
+    // https://firebase.google.com/docs/auth/android/firebaseui
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    // facebook
+    implementation 'com.facebook.android:facebook-android-sdk:7.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.2'
+
+    //rx java
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.11'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+
+
+    // https://medium.com/att-israel/logger-library-the-kotlin-way-248f99d3c042
+    // MyLogKt library
+    //implementation 'net.alexandroid.utils:mylogkt:1.12'
+
+    // SLF4j Log libary
+    //implementation 'org.slf4j:slf4j-api:1.7.25'
+    //implementation 'org.slf4j:slf4j-nop:1.7.25'
+
+    // Timber - https://medium.com/mindorks/better-logging-in-android-using-timber-72e40cc2293d
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+
+    // https://medium.com/@mobindustry/how-to-quickly-implement-beautiful-charts-in-your-android-app-cf4caf050772
+    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+
+
+
+
 }

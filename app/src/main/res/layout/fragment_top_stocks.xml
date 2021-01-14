@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.roeyc.stockapp.topstocks.TopStocksViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="topstocks.TopStocksFragment">
+
+        <TextView
+            android:id="@+id/top_stocks_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/top_stocks_title"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mainContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">// Initially hide all the body
+
+            <ImageView
+                android:id="@+id/first_stock_number"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="60dp"
+                android:gravity="center"
+                android:text="@string/top_stocks_first_stock"
+                app:layout_constraintBottom_toBottomOf="@+id/first_stock_symbol"
+                app:layout_constraintEnd_toStartOf="@+id/barrier1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/first_stock_name"
+                app:srcCompat="@drawable/ic_filter_1_black_24dp" />
+
+
+            <TextView
+                android:id="@+id/first_stock_name"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/first_stock_symbol"
+                app:layout_constraintEnd_toStartOf="@+id/barrier2"
+                app:layout_constraintStart_toStartOf="@+id/first_stock_symbol"
+
+                tools:text="name1" />
+
+            <TextView
+                android:id="@+id/first_stock_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="70dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="@+id/second_stock_symbol"
+                app:layout_constraintStart_toStartOf="@+id/barrier1"
+                tools:text="sym1" />
+
+            <TextView
+                android:id="@+id/first_stock_users_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@+id/first_stock_symbol"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/first_stock_name"
+                tools:text="10" />
+
+            <ImageView
+                android:id="@+id/second_stock_number"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="60dp"
+                android:gravity="center"
+                android:text="@string/top_stocks_second_stock"
+                app:layout_constraintBottom_toBottomOf="@+id/second_stock_symbol"
+                app:layout_constraintEnd_toStartOf="@+id/barrier1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/second_stock_name"
+                app:srcCompat="@drawable/ic_filter_2_black_24dp" />
+
+            <TextView
+                android:id="@+id/second_stock_name"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/second_stock_symbol"
+                app:layout_constraintEnd_toStartOf="@+id/barrier2"
+                app:layout_constraintStart_toStartOf="@+id/second_stock_symbol"
+                tools:text="name2" />
+
+            <TextView
+                android:id="@+id/second_stock_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/barrier1"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="sym2" />
+
+            <TextView
+                android:id="@+id/second_stock_users_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@+id/second_stock_symbol"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/second_stock_name"
+                tools:text="10" />
+
+            <ImageView
+                android:id="@+id/third_stock_number"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="60dp"
+                android:gravity="center"
+                android:text="@string/top_stocks_third_stock"
+                app:layout_constraintBottom_toBottomOf="@+id/third_stock_symbol"
+                app:layout_constraintEnd_toStartOf="@+id/barrier1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/third_stock_name"
+                app:srcCompat="@drawable/ic_filter_3_black_24dp" />
+
+            <TextView
+                android:id="@+id/third_stock_name"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/third_stock_symbol"
+                app:layout_constraintEnd_toStartOf="@+id/barrier2"
+                app:layout_constraintStart_toStartOf="@+id/third_stock_symbol"
+                tools:text="name3" />
+
+            <TextView
+                android:id="@+id/third_stock_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="@+id/barrier1"
+                app:layout_constraintTop_toBottomOf="@+id/second_stock_symbol"
+                tools:text="sym3" />
+
+            <TextView
+                android:id="@+id/third_stock_users_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="@+id/third_stock_symbol"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/barrier2"
+                app:layout_constraintTop_toTopOf="@+id/third_stock_name"
+                tools:text="10" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="first_stock_number,second_stock_number,third_stock_number"
+                tools:layout_editor_absoluteX="411dp" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="first_stock_symbol,second_stock_symbol,third_stock_symbol"
+                tools:layout_editor_absoluteX="811dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

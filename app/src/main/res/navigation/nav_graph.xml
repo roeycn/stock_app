@@ -7,35 +7,57 @@
 
     <fragment
         android:id="@+id/overviewFragment"
-        android:name="com.example.qaapp.overview.OverviewFragment"
+        android:name="com.roeyc.stockapp.overview.OverviewFragment"
         android:label="fragment_overview"
         tools:layout="@layout/fragment_overview" >
         <action
-            android:id="@+id/action_showDetail"
-            app:destination="@id/detailFragment" />
+            android:id="@+id/action_overviewFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
         <action
-            android:id="@+id/action_overviewFragment_to_marsFragment"
-            app:destination="@id/marsFragment" />
+            android:id="@+id/action_overviewFragment_to_watchListFragment"
+            app:destination="@id/watchListFragment" />
         <action
-            android:id="@+id/action_overviewFragment_to_stockFragment"
-            app:destination="@id/stockFragment" />
+            android:id="@+id/action_overviewFragment_to_topStocksFragment"
+            app:destination="@id/topStocksFragment" />
+        <action
+            android:id="@+id/action_overviewFragment_to_bearOrBullFragment"
+            app:destination="@id/bearOrBullFragment" />
     </fragment>
     <fragment
-        android:id="@+id/detailFragment"
-        android:name="com.example.qaapp.detail.DetailFragment"
-        android:label="fragment_detail"
-        tools:layout="@layout/fragment_detail" >
+        android:id="@+id/searchFragment"
+        android:name="com.roeyc.stockapp.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_stockInfoFragment"
+            app:destination="@id/stockInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchListFragment"
+        android:name="com.roeyc.stockapp.watchlist.WatchListFragment"
+        android:label="fragment_watch_list"
+        tools:layout="@layout/fragment_watch_list" >
+        <action
+            android:id="@+id/action_watchListFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/stockInfoFragment"
+        android:name="com.roeyc.stockapp.stockinfo.StockInfoFragment"
+        android:label="fragment_stock_info"
+        tools:layout="@layout/fragment_stock_info" >
         <argument
-            android:name="selectedProperty"
-            app:argType="com.example.qaapp.database.Cars" />
+            android:name="selectedStock"
+            app:argType="com.roeyc.stockapp.search.SearchResultDao" />
     </fragment>
     <fragment
-        android:id="@+id/marsFragment"
-        android:name="com.example.qaapp.mars.MarsFragment"
-        android:label="fragment_mars"
-        tools:layout="@layout/fragment_mars" />
+        android:id="@+id/topStocksFragment"
+        android:name="com.roeyc.stockapp.topstocks.TopStocksFragment"
+        android:label="top_stocks_fragment"
+        tools:layout="@layout/fragment_top_stocks" />
     <fragment
-        android:id="@+id/stockFragment"
-        android:name="com.example.qaapp.stock.StockFragment"
-        android:label="StockFragment" />
+        android:id="@+id/bearOrBullFragment"
+        android:name="com.roeyc.stockapp.bearorbull.BearOrBullFragment"
+        android:label="fragment_bear_or_bull"
+        tools:layout="@layout/fragment_bear_or_bull" />
 </navigation>
